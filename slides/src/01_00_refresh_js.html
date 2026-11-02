@@ -1,0 +1,891 @@
+<section>
+	<br><br><br>
+	<h1>JavaScript</h1>
+	<h2></h2>
+	<br><br>
+	<img src="assets/js.svg" width="200px" style="margin:auto;display:flex;">
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Introduction</h4>
+	<br><br>
+	<p>
+		Le JavaScript est un langage de programmation, parmi les plus utilisés au monde
+		<ul>
+			<li>Le JavaScript est créé en 1995</li>
+			<li>La syntaxe est standardisée sous le nom d'<i>ECMAScript</i></li>
+			<li>Depuis 2015, une nouvelle version sort chaque année</li>
+			<li>Le web utilise ce language pour scripter ses pages, tous les navigateurs savent interpréter du JavaScript</li>
+		</ul>
+	</p>
+	<br>
+	<p class="info">
+		Il existe un language de programmation nommé Java, qui n'a absolument rien à voir avec JavaScript. <br>
+		Il ne faut pas les confondre
+	</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Ressources</h4>
+	<br><br>
+	<p>
+		De nombreux tutoriels et documentations sont disponibles sur presque tous les supports (livres, sites internet, vidéos, etc.)
+		<ul>
+			<li>
+				W3Schools : <a href="https://www.w3schools.com/js/">https://www.w3schools.com/js/</a>
+				<br>
+				Références et tutoriels facile d'accès. Excellent pour débuter 
+			</li>
+			<li>
+				MDN : <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">https://developer.mozilla.org/en-US/docs/Web/JavaScript</a>
+				<br>
+				Documentation officielle de Mozilla. Référence la plus complète et la plus précise disponible 
+			</li>
+		</ul>
+	</p>
+	<p>N'hésitez pas à chercher sur internet dès que vous avez une questions. <br><i>Savoir utiliser une documentation doit faire partie de vos compétences</i></p>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Dans une page web</h4>
+	<br><br>
+	<p>
+		En HTML, le JavaScript s'écrit toujours via une balise &lt;script&gt;.
+		<br><br>
+		Il peut s'écrire directement dans la balise :
+	</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;JavaScript&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;script&gt;
+            console.log('Hello World!');
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>		
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Dans une page web</h4>
+	<br><br>
+	<p>
+		En HTML, le JavaScript s'écrit toujours via une balise &lt;script&gt;.
+		<br><br>
+		Ou référencer le contenu d'un fichier externe :
+	</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+    &lt;head&gt;
+        &lt;title&gt;JavaScript&lt;/title&gt;
+    &lt;/head&gt;
+    &lt;body&gt;
+        &lt;script src="script.js"&gt;&lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>		
+	<p>
+		Ces deux codes sont équivalents si <i>script.js</i> contient <code>console.log('Hello World!');</code>
+	</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les variables</h4>
+	<br>
+	<p>
+		JavaScript utilise un <i>typage implicite</i>.<br><br>
+		Comme en Python, on ne déclare pas le type des variables. Les variables sont déclarées avec <code>let</code>, ou avec <code>const</code> si leur valeur ne change pas.
+	</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		let maVariable = 3;    // Déclare une variable, sa valeur pourra changer
+		const maVariable = 3;  // Déclare une constante, changer sa valeur provoquera une erreur
+	</code></pre>		
+	<br>
+	<p class="info">
+		Selon la norme ECMAScript, toutes les instructions en JavaScript doivent se terminer par un point-virgule, mais l’interpréteur acceptera si vous ne les mettez pas. Prenez l'habitude de respecter le standard et de toujours les utiliser.
+	</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les types</h4>
+	<br>
+	<p>
+		Bien que le typage sont implicite, toutes les variables en JavaScript possèdent un type.<br>
+		Il existe 7 types de base.
+	</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const maVariable = "JavaScript";    // Chaîne de caractères
+		const maVariable = 3.14;            // Nombre réel
+		const maVariable = true;            // Booléen
+		const maVariable = null;            // null, indique l'absence d'un objet
+		const maVariable = undefined;       // undefined, indique "pas de valeur", "non déclaré"
+		const maVariable = BigInt(3);       // BigInt, entier sans limites
+		const maVariable = Symbol("foo");   // Symbol, pas utile dans ce cours
+	</code></pre>	
+	<div class="fragment fade-in">
+		<p>
+			L'instruction <code>typeof</code> retourne le type de la variable sous forme de chaîne de caractères
+		</p>
+		<pre><code data-trim data-noescape class="language-javascript">
+			const maVariable = false;
+			const typeDeMaVariable = typeof maVariable; // typeDeMaVariable vaut "boolean"
+		</code></pre>
+		<p>Il existe également d'autres types non basiques, qui sont des structures stockant des types basiques (tableaux, objets, etc).</p>
+	</div>	
+	
+	<aside class="notes">
+JavaScript est un language à &lt;b&gt;typage dynamique implicite&lt;/b&gt; &lt;br&gt;
+Implicite signifie que le language infère le type selon le contexte, on n'indique jamais explicitement le type d'une variable &lt;br&gt;
+Dynamique signifie que la vérification des types est faite lors de l'execution. Par opposition a des languages tels que le C/C++ où la vérification des types est faites lors de la compilation. &lt;br&gt;&lt;br&gt;
+
+Même si on ne déclare pas explicitement le type d'une variable, JavaScript assigne en interne un type à chaque variable.
+	</aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>La console</h4>
+	<br>
+	<p>
+		Pour afficher un texte dans la console :
+	</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		console.log("Bonjour"); // Affichera "Bonjour" dans la console
+		console.warn("Attention"); // Affichera un message d'avertissement
+		console.error("Erreur"); // Affichera un message d'erreur
+	</code></pre>	
+	<br>
+	<p class="info">
+		La fonction print() existe en JavaScript, mais il s'agit de la commande pour imprimer la page web !
+	</p>
+	<br><br>
+	<p>
+		La console des navigateurs web permet d'afficher plus que du texte. Il est possible d'afficher et d'explorer des variables, des objets, etc. Utilisez-la pour debugger votre code.
+	</p>
+	
+	<aside class="notes">
+A part les types de bases, tous les autres sont des "objects". Cela veut dire que tous les types de JavaScript suivent une logique similaire et peuvent facilement être affichés dans la console. La console des navigateur, quand un objet y est affiché, ajoute même une interface pour naviguer dans les propriétés de l'objet. Cela est extrêmement pratique pour debugger.
+	</aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les conditions</h4>
+	<p>Les conditions s'écrivent de la manière suivante :</p>
+
+	<pre><code data-trim data-noescape class="language-javascript">
+		if(a &lt; b){
+			console.log("Do A");
+		}else if(a &lt; c){
+			console.log("Do B");
+		}else{
+			console.log("Do C");
+		}
+	</code></pre>
+	<p>Comme en Python, les blocs <code>else if</code> et <code>else</code> sont facultatifs</p>
+	<p>
+		Il est aussi possible de faire des <i>ternaires</i> avec la syntaxe <code>condition ? si_vrai : si_faux</code>
+	</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const a = 5;
+		const value = a > 3 ? "Plus grand" : "Plus petit ou égal";
+		console.log(value); // "Plus grand"
+	</code></pre>
+
+<aside class="notes">
+Détail concernant les conditions: JavaScript (comme Python, C/C++ et bien d'autres) évalue les conditions en court-circuit.
+Cela veut dire que JavaScript évalue les conditions élément par élément, et continue l'exécution dès qu'une décision peut être prise, même si toute l'expression n'a pas été évaluée.
+Exemple : 
+<pre>
+const a = [];
+
+// Cette ligne est valide, car comme "a.length &lt;= 0" est vrai, la condition s'execute sans évaluer la suite
+if(a.length &lt;= 0 || a[0][0] == 2){ console.log("Valide"); }
+
+// Cette ligne provoque une erreur, car "a[0]" est undefined et donc "a[0][0]" est invalide 
+if(a[0][0] == 2 || a.length &lt;= 0){ console.log("Erreur"); }
+</pre>
+</aside>
+
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les boucles — la boucle while</h4>
+	<p>Pour répéter des instructions plusieurs fois, il existe les boucles</p>
+
+	<pre><code data-trim data-noescape class="language-javascript">
+		let text = "";
+		while(text != "Bonjour"){
+			text = prompt("Dites 'Bonjour' !");  // prompt() Demande à l'utilisateur d'entrer un texte
+		}
+		console.log("Vous avez dit bonjour !");
+	</code></pre>
+	<p>
+		La boucle <code>while</code> répète son contenu tant que la condition est vraie.
+
+		La boucle <code>while</code> est utile quand <i>on ne connaît pas le nombre de répétitions à faire</i>.
+
+		Attention à <i>toujours</i> vous assurer que la boucle se terminera, sinon c'est une boucle infinie
+	</p>
+	<div class="info">
+		L'évaluation de la condition est faite au début de chaque itération
+	</div>
+
+	<aside class="notes">
+		Les boucles infinie sont particulièrement dangereuses car elles bloquent complètement la page, et il n'y a pas d'autres choix que de recharger la page. <br><br>
+
+		S'il n'est pas évident que la boucle s'arrêtera quoi qu'il arrive, pensez à mettre une condition d'arrêt, ou utiliser une boucle <i>for</i> à la place.
+	</aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les boucles — la boucle for</h4>
+	<p>La boucle <code>for</code> est une autre manière de répéter des instructions</p>
+
+	<pre><code data-trim data-noescape class="language-javascript">
+		for(let i=0; i&lt;10; i++){
+			console.log(i); // 0 1 2 3 4 5 6 7 8 9 
+		}
+	</code></pre>
+	<p>
+		La boucle for(initialisateur ; condition ; iteration ) :
+		<ul>
+			<li>Exécute <code>initialisateur</code> avant d'entrer dans la boucle</li>
+			<li>Exécute <code>iteration</code> après chaque tour de boucle</li>
+			<li>S'exécute tant que <code>condition</code> est vraie</li>
+		</ul>
+	</p>
+	<p>
+		Ce type de boucle est utile quand <i>on connait le nombre de répétitions à faire</i>.<br>
+		Elle permet d'éviter des erreurs qui créent des bouclent infinies, car il est plus simple de voir que la boucle s'arrêtera dans tous les cas.
+
+	</p>
+
+<aside class="notes">
+Toute boucle <i>for</i> peut être écrite sous forme de boucle <i>while</i> et inversement. Choisir l'une ou l'autre dépend du contexte. On préférera le type de boucle qui permet d'exprimer le plus simplement la logique du code.
+</aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les tableaux</h4>
+	<p>Les tableaux sont l'équivalent des listes en Python</p>
+
+	<pre><code data-trim data-noescape class="language-javascript">
+		const a = [];                           // Tableau vide
+		const b = [1, 2, 3];                    // Tableau de nombres
+		const c = [1, "a", null, 12.4, [1,2] ]; // Les tableaux peuvent contenir un mélange de types
+		console.log(c[1]);                      // Accès aux éléments : affiche "a".
+		c[58] = true;                           // On peut assigner n'importe quel élément d'un tableau. 
+												                    // Tous les éléments non assignés valent 'undefined'
+
+		b.push(5);                              // "push" ajoute un élément, b vaut alors [ 1, 2, 3, 5 ] 
+		b.pop();                                // "pop" supprime et renvoie le dernier élément
+		                                        // b contient alors  [1, 2, 3]
+
+		console.log(b.length);                  // Affiche 3. "length" retourne la taille du tableau
+
+		const d = [[1,2,3], [4,5,6], [7,8,9]];  // Il est possible d'avoir des tableaux de tableaux
+		console.log(d[1][2]);                   // Affiche 6
+	</code></pre>
+	<p>La numérotation des tableaux commence toujours à 0. <code>tab[3]</code> affichera donc le 4eme élément de tab.</p>
+	<p>Techniquement, en JavaScript, les tableaux sont des objets. <code>typeof []</code> retourne <code>"object"</code>
+</p>
+
+<aside class="notes">
+En incluant des tableaux dans des tableaux, il est possible de créer des tableaux avec n'importe quelle dimension.
+Par exemple 
+<pre>
+const m = [
+    [ [1,2],  [3, 4]  ],
+    [ [5,6],  [7, 8]  ],
+    [ [9,10], [11,12] ]
+];
+</pre>
+est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][0]</i>.
+</aside>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les fonctions</h4>
+    <p>
+        Les fonctions se déclarent avec le mot-clé <code>function</code>
+        <pre><code data-trim data-noescape class="language-javascript">
+            function add(a, b){
+                return a+b;
+            }
+            console.log(add(2,3)); // 5
+        </code></pre>
+    </p>
+    <p>
+        En JavaScript, les fonctions sont des objets, qui peuvent être stockés dans des variables
+        <pre><code data-trim data-noescape class="language-javascript">
+            const add = function (a, b){
+                return a+b;
+            };
+            console.log(add(2,3)); // 5
+        </code></pre>
+    </p>
+    <p>
+        On les appelle alors <i>fonctions anonymes</i>, car elles peuvent ne pas porter de nom.
+    </p>
+    <aside class="notes">
+        En JS, les fonctions peuvent être déclarées en dessous de leur premier appel, cela n'a pas d'importance. On appelle cette propriété le <i>hoisting</i>. 
+        Quand un language possède des fonctions utilisables comme n'importe quel objet, passables en paramètres et retournables par d'autres fonctions, il est dit avoir des "<a href="https://en.wikipedia.org/wiki/First-class_function">first-class functions</a>".
+    </aside>
+</section>
+
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les fonctions</h4>
+    <p>
+        Cela permet de passer des fonctions en paramètres d'autres fonctions
+        <pre><code data-trim data-noescape class="language-javascript">
+            const mul2 = function (a){return 2*a;}
+            const squared = function (a){return a*a;}
+
+            function apply(array, func){
+                const result = [];
+                for(const x of array){
+                    result.push(func(x));
+                }
+                return result;
+            }
+
+            console.log(apply([1,2,3,4], mul2)) // 2,4,6,8
+            console.log(apply([1,2,3,4], squared)) // 1,4,9,16
+        </code></pre>
+    <aside class="notes">
+        Utiliser la notation <code>mul2</code> indique d'utiliser la fonction elle-même <br>
+        Utiliser la notation <code>mul2(x)</code> appelle (execute) la fonction avec la valeur <code>x</code>
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les fonctions</h4>
+    <p>
+        Les <i>fonctions fléchées</i> (<i>arrow functions</i>) sont une notation encore plus compacte
+        <pre><code data-trim data-noescape class="language-javascript">
+            const add = (a, b) => {
+                return a+b;
+            };
+            console.log(add(2,3)); // 5
+        </code></pre>
+    </p><p>
+        Si la fonction n'est composée que d'un <code>return</code>, on peut omettre les accolades et le <code>return</code>
+        <pre><code data-trim data-noescape class="language-javascript">
+            const add = (a, b) => a+b;
+            console.log(add(2,3)); // 5
+        </code></pre>
+    </p><p>
+        Toutes ces formes sont identiques, à l'exception de détails que nous n'aborderons pas dans ce cours
+    </p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les fonctions</h4>
+    <p>
+        Les fonctions fléchées sont très utilisées en JavaScript, elles simplifient beaucoup la syntaxe.
+        <pre><code data-trim data-noescape class="language-javascript">
+            function apply(array, func){
+                const result = [];
+                for(const x of array){
+                    result.push(func(x));
+                }
+                return result;
+            }
+
+            console.log(apply([1,2,3,4], a => 2*a)) // 2,4,6,8
+            console.log(apply([1,2,3,4], a => a*a)) // 1,4,9,16
+        </code></pre>
+    </p>
+    <div class="fragment fade-in">
+         <p>En pratique, les tableaux possèdent une méthode <code>map</code> qui fait exactement l'effet de <code>apply</code> </p>
+        <pre><code data-trim data-noescape class="language-javascript">
+            console.log( [1,2,3,4].map(x => 2*x) ) // 2,4,6,8
+            console.log( [1,2,3,4].map(x => x*x) ) // 1,4,9,16
+        </code></pre>
+    </div>
+    <aside class="notes">
+        Si la fonction fléchée n'a qu'un paramètre, on peut même retirer les parenthèses autour du paramètre, comme dans l'exemple de cette slide.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les fonctions - Ressources</h4>
+    <br>
+    <p>Documentation officielle : <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Functions">https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Functions</a></p>
+    <p>Tutoriel : <a href="https://www.w3schools.com/js/js_functions.asp">https://www.w3schools.com/js/js_functions.asp</a></p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les objets</h4>
+    <p>En JavaScript, un objet est un ensemble de propriétés qui possèdent une clé et une valeur</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        const myObject = {
+            cle1 : "val1",
+            cle2 : 35,
+            cle3 : x => 2*x
+        }
+    </code></pre>
+    <p>Il s'agit de l'équivalent des dictionnaires en Python</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les objets</h4>
+    <p>Les clés peuvent être lues ou modifiées avec une notation utilisant un point ou des crochets</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        const myObject = {
+            nombre: 8
+        };
+        
+        console.log(myObject.nombre);       // 8
+        console.log(myObject['nombre']);    // 8
+
+        myObject.nombre = 9;                // Assigne 9
+        myObject['nombre'] = 9;             // Identique à la ligne précédente
+    </code></pre>
+    <p>Lire une clé qui n'existe pas retourne la valeur <code>undefined</code>.</p>
+    <p>Assigner une clé qui n'existe pas crée cette clé.</p>
+    <aside class="notes">
+        La notation avec un point est simple et ressemble beaucoup à d'autres languages orientés objet.<br>
+        La notation avec des crochet permet d'accéder à un élément selon la valeur d'une variable. Par exemple : <br>
+        <code>const attr = 'nombre';</code><br><code>myObject[attr] = 9;</code>
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les objets</h4>
+    <p>On peut lister les clés d'un objet avec la boucle <code>for...in</code></p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        const myObject = {
+            elem1: 8,
+            elem2: "A"
+        };
+        for(const k in myObject){
+            console.log(k + " : " + myObject[k]);
+        }
+        // Affichera : 
+        // elem1 : 8
+        // elem2 : A
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les objets</h4>
+    <p>On peut définir des fonctions dans un objet de deux manières</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        const mesFonctions = {
+            mult2 : function(x){           // Manière 1 : Assigner une fonction à une propriété
+                return x*2;
+            },
+            mult3(x) {                     // Manière 2 : Directement écrire la fonction sans
+                return x*3;                //             lui donner explicitement une clé
+            }
+        };
+        console.log(mesFonctions.mult2(3)) // 6
+        console.log(mesFonctions.mult3(3)) // 9
+    </code></pre>
+    <p>Ces deux manières sont équivalentes</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les objets</h4>
+    <p>On appelle les variable stockées dans un objet des <i>attributs</i></p>
+    <p>On appelle les fonctions stockées dans un objet des <i>méthodes</i></p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        const voiture = {
+            poids: 1400,                    // Attribut
+            marque: "BMW",                  // Attribut
+            couleur: "blanc",               // Attribut
+            sieges_chauffants: true,        // Attribut
+            start_moteur() { /* ... */},    // Méthode
+            stop_moteur() { /* ... */ },    // Méthode
+            marche_arriere() { /* ... */ }  // Méthode
+        };
+    </code></pre>
+    <div class="fragment fade-in">
+        <p>Comment faire si on souhaite créer plusieurs <i>voitures</i> dans notre programme sans se répéter ?</p>
+        <p>Comment faire pour que les méthodes d'un objet affectent ses attributs ?</p>
+    </div>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'orienté objet et les classes</h4>
+    <p>JavaScript permet de créer des constructeurs. Un constructeur est simplement une fonction destinée à créer des objets</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        function Point(x,y){
+            this.x = x;
+            this.y = y;
+            this.display = () => console.log("("+this.x+";"+this.y+")");
+        }
+
+        const p = new Point(10, 20);    // Crée un objet nommé "p"
+        console.log(p.x);               // 10
+        p.display()                     // (10;20)
+    </code></pre>
+    <p>Le mot clé <code>this</code> est une référence vers le contexte courant, c'est-à-dire, dans ce cas, l'objet qui est créé par la fonction.</p>
+    <p>Le mot clé <code>new</code> indique de faire, à partir contexte de la fonction, un nouvel objet. C'est-à-dire, de passer tout ce qui a été assigné à <code>this</code> dans <code>p</code></p>
+    <aside class="notes">
+        Un constructeur est simplement une fonction utilisée pour construire des objets. Elle n'a rien de particulier, à part qu'elle est utilisée dans ce but.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'orienté objet et les classes</h4>
+    <p>
+        En JavaScript moderne, il existe un syntaxe plus proche des autres languages orientés objet.<br>
+        Nous utiliserons cette syntaxe, plus lisible pour des objets complexes.
+    </p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class Point{
+            constructor(x,y){   // Le constructeur est une fonction qui se nomme toujours "constructor"
+                this.x = x;     // C'est cette fonction qui sera appelée avec "new"
+                this.y = y;
+            }
+            display(){
+                console.log("("+this.x+";"+this.y+")");
+            }
+        }
+        
+        const p = new Point(10, 20);    // Crée un objet nommé "p"
+        console.log(p.x);               // 10
+        p.display()                     // (10;20)
+    </code></pre>
+    <p>Les syntaxes de cette slides et la précédente sont équivalentes</p>
+     <aside class="notes">
+        On dira "classe" pour parler du type conceptuel, mais pas d'un objet précis. Ainsi dans la "classe" Point possède les attributs x, y et la méthode display.
+        On dira "objet" pour parler d'une instance de la classe. Ainsi la constance p est un objet de type Point, c'est-à-dire qui est une instance de la classe Point.
+        Par convention, on commencera le nom des classes par une majuscule (Point) et on commencera le nom des objets par une minuscule (p).
+        <br><br>
+        La notation de cette slide est ce qu'on appelle un <i>sucre syntaxique</i>, c'est à dire une nouvelle notation pour quelque chose qu'on pouvait déjà faire avant, mais plus pratique. Elle n'apporte aucune fonction supplémentaire. JavaScript, au moment d'executer ce code, va le traiter exactement comme celui de la slide précédente, et n'importe quelle classe peut être écrite d'une manière ou de l'autre.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les <i>getters</i> et les <i>setters</i></h4>
+    <p>Il est commun de vouloir modifier les attributs d'un objet, mais le faire directement peut créer des problèmes</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class Disk{
+            constructor(x, y, radius){
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+            }
+            perimeter(){
+                return 2*Math.PI*this.radius;
+            }
+        }
+        
+        const disk = new Disk(4, 5, 8);
+        disk.radius = -3;               // Rien n'empêche d'attribuer des valeurs ne faisant aucun sens
+        console.log(disk.perimeter());  // Dans ce cas l'objet se comportera de manière inattendue
+    </code></pre>
+    <p>On aimerait vérifier que les attributs soient toujours cohérents</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les <i>getters</i> et les <i>setters</i></h4>
+    <p>Pour cela, on peut utiliser les <i>getters</i> et les <i>setters</i></p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class Disk{
+            constructor(x, y, radius){
+                this.x = x;
+                this.y = y;
+                this._radius = radius;
+            }
+            set radius(r){
+                this._radius = r > 0 ? r : 0; // Ou n'importe quelle autre manière de gérer ce cas
+            }
+            get radius(){
+                return this._radius;
+            }
+        }
+        
+        const disk = new Disk(4, 5, 8);
+        disk.radius = -3;               // Ce cas sera correctement géré
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les <i>getters</i> et les <i>setters</i></h4>
+    <p>Cela permet aussi de simuler des attributs qui n'existent pas</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class Disk{
+            /* ... même contenu qu'avant ... */
+            get area(){
+                return Math.PI*this._radius*this._radius;
+            }
+            set area(a){
+                this._radius = Math.sqrt(a/Math.PI);
+            }
+        }
+        
+        const disk = new Disk(4, 5, 8);
+        console.log(disk.area);     // Comme si area était bien un attribut
+        disk.area = 5;              // On peut également l'assigner
+        console.log(disk.radius);   // Et cela aura modifié la valeur de radius
+    </code></pre>
+    <p>L'utilisation des getters et de setters n'est pas du tout obligatoire, et certaines personnes écriraient clairement des méthodes <code>getArea()</code> et <code>setArea()</code></p>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les objets</h4>
+	<br>
+	<p>Site officiel (très formel et complet): <br>
+        Pour les objets : <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Working_with_objects</a>
+        <br>
+        Pour les classes : <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_classes">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_classes</a>
+    </p>
+	<p>W3Schools: <br>
+        Pour les objets : <a href="https://www.w3schools.com/js/js_object_advanced.asp">https://www.w3schools.com/js/js_object_advanced.asp</a>
+        <br>
+        Pour les classes : <a href="https://www.w3schools.com/js/js_classes.asp">https://www.w3schools.com/js/js_classes.asp</a>
+    </p>
+    <p>
+        Cours de géoinformatique de Bachelor 2025 (GIN 2025) : <br>
+        Page GitHub : <a href="https://github.com/corentin-junod/HEIG-VD-GIN-2025">https://github.com/corentin-junod/HEIG-VD-GIN-2025</a> <br>
+        Slides : <a href="https://github.com/corentin-junod/HEIG-VD-GIN-2025/tree/main/slides/pdfs"">https://github.com/corentin-junod/HEIG-VD-GIN-2025/tree/main/slides/pdfs</a>
+    </p>
+</section>
+
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+
+	<p>En JavaScript, il existe une différence fondamentale entre les types de base et les autres types. <br><br> Qu'affiche ce code ?</p>
+
+	<pre><code data-trim data-noescape class="language-javascript">
+		let a = 5;
+		let b = a;
+
+		b = 10;
+
+		console.log(a);
+		console.log(b);
+	</code></pre>
+
+	<p class="fragment fade-in">
+		Ce code affichera : <br>
+		5 <br>
+		10 <br>
+		Rien de très surprenant
+	</p>
+
+<aside class="notes">
+
+Voici un exemple simple, rien de surprenant, mais il est intéressant d'examiner en détail ce que JavaScript fait lors de l'execution de ces lignes.
+</aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+	<br>
+    <pre><code data-trim data-noescape class="language-javascript">
+		let a = 5;
+	</code></pre>
+
+	<img src="assets/immutable1.svg">
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+	<br>
+    <pre><code data-trim data-noescape class="language-javascript">
+		let a = 5;
+		let b = a; // Ici "b" est une nouvelle valeur, initialisée à la valeur de "a"
+	</code></pre>
+
+	<img src="assets/immutable2.svg">
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+	<br>
+    <pre><code data-trim data-noescape class="language-javascript">
+		let a = 5;
+		let b = a; // Ici "b" est une nouvelle valeur, initialisée à la valeur de "a"
+
+		b = 10;
+	</code></pre>
+
+	<img src="assets/immutable3.svg">
+
+	<p>
+		En JavaScript les types de base sont <i>immuables</i>. Un assignment créera toujours une copie.
+	</p>
+
+	<aside class="notes">
+
+Les types de base sont des variables qui *ne changent jamais de valeur*. On dit qu'elles sont immuables. Lors d'un assignment, JavaScript va copier la valeur dans un nouvel espace mémoire, indépendant du premier. Ainsi, modifier la variable `b`dans l'exemple précédent ne modifie pas `a`, car il s'agit de deux variables séparées.
+
+En réalité, si vous assignez une nouvelle valeur à `a`, par exemple avec le code :
+<pre>
+let a = 5;
+a = 10;
+</pre>
+La première ligne assignera à `a` une valeur 5 stockée en mémoire, puis la seconde ligne créera un autre espace mémoire et assignera ce dernier à `a`. La valeur d'origine `5`ne sera pas modifiée.
+On peut le constater si `a`est une chaîne de caractères : 
+<pre>
+let a = "Bonjour";
+a[0] = "A";
+</pre>
+Faire un `console.log(a)` affichera "Bonjour" et non "Aonjour", même si on a assigné "A" au premier caractère. Cet assignment n'a eu aucun effet car `a` est d'un type de base et donc immuable.
+</aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+
+	<p>En JavaScript, il existe une différence fondamentale entre les types de base et les objets. <br><br> Qu'affiche ce code ?</p>
+
+	<pre><code data-trim data-noescape class="language-javascript">
+		let a = [1, 2, 3];
+		let b = a;
+
+		b[1] = 10;
+
+		console.log(a);
+		console.log(b);
+	</code></pre>
+
+	<p class="fragment fade-in">
+		Ce code affichera : <br>
+		[1, 10, 3] <br>
+		[1, 10, 3] <br>
+	</p>
+
+<aside class="notes">
+Ici on remarque que modifier `b` modifie également `a`. Le comportement est différent que celui du cas précédent, pourquoi?
+</aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+	<br>
+    <pre><code data-trim data-noescape class="language-javascript">
+		let a = [1, 2, 3];
+	</code></pre>
+	<img src="assets/immutable4.svg">
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+	<br>
+    <pre><code data-trim data-noescape class="language-javascript">
+let a = [1, 2, 3];
+
+// "a" n'est pas d'un type de base. Une copie n'est pas faite. 
+// "b" sera une référence vers la même valeur que "a"
+let b = a;
+	</code></pre>
+	<img src="assets/immutable5.svg">
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+	<br>
+<pre><code data-trim data-noescape class="language-javascript">
+let a = [1, 2, 3];
+
+// "a" n'est pas d'un type de base. Une copie n'est pas faite. 
+// "b" sera une référence vers la même valeur que "a"
+let b = a;
+
+b[1] = 10; // Comme "b" utilise la même valeur que "a", changer "b" change implicitement "a"
+</code></pre>
+	<img src="assets/immutable6.svg">
+
+	<p>
+		En JavaScript les types non basiques sont <i>mutables</i>. Un assignment créera une référence vers l'objet.
+	</p>
+
+	<aside class="notes">
+
+		Contrairement aux types de base, quand on assigne un objet, celui-ci n'est pas copié. La variable assignée pointera vers le même espace mémoire que la variable originale. Ainsi, changer l'une changera implicitement l'autre aussi.
+
+Les objets sont *mutable*, il est possible de les changer directement sans créer de copie. C'est bien le comportement attendu : 
+<pre>
+let a = [1,2,3];
+a[0] = 4;
+</pre>
+Dans ce cas un `console.log(a)` affichera bien `[4,2,3]`, car le tableau a été modifié.
+
+Il devient clair pourquoi un code comme celui-ci est valide : 
+<pre>
+const a = [1,2,3];
+a[0] = 10;
+</pre>
+Bien que `a` soit `const`, il est autorisé de modifier un élément du tableau, car `a` est toujours assigné au même objet. C'est l'objet lui-même que l'on change avec la seconde instruction. Le mot clé `const` ne garanti donc *pas* que l'objet assigné à une variable ne changera pas, il garanti que la variable ne pourra pas être assignée à autre chose.
+
+</aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'immuabilité</h4>
+	<br>
+    <p>L'observation des slides précédentes implique plusieurs constats :</p>
+    <p>
+        <ul>
+            <li>Ce changement "implicite" s'appelle un <i>effet de bord</i>. Il peut arriver avec n'importe quel type non basique (tableaux, objets, etc)</li>
+            <li>Les effets de bords sont dangereux, car difficile à prévoir. Les attributs d'un objet peuvent subir des effets de bord, par exemple.</li>
+            <li>Des tableaux et objets constants peuvent voir la valeur qu'ils référencent changer. <br>Par exemple :</li>
+        </ul>
+        <pre><code data-trim data-noescape class="language-javascript">
+            const a = 6;
+            a = 7; // Erreur ! Car la valeur de "a" change
+            
+            const b = [1, 2, 3];
+            b[0] = 2; // Pas de problème. "b" référence toujours le même tableau. 
+            // On peut dire : "Ce vers quoi 'b' pointe n'a pas changé"
+
+            b = [1, 2, 3]; // Erreur ! 
+            // Le tableau [1,2,3] de cette ligne est un nouveau tableau, différent de celui au dessus.
+            // Ici on change ce vers quoi "b" pointe, et c'est interdit car "b" est constant
+
+        </code></pre>
+    </p>
+</section>
