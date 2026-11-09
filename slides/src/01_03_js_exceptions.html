@@ -1,0 +1,131 @@
+<section>
+	<br><br><br>
+	<h1>JavaScript</h1>
+	<h2>Exceptions</h2>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exceptions</h4>
+	<p>Il arrive de devoir gérer des problèmes dans notre code </p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		function divideBy(x, y){
+			return x / y;  // Que faire si y = 0 ?
+		}
+
+		function fetchData(url){
+			return fetch(url); // Que faire si l'URL est invalide ? Si le serveur ne répond pas ?
+		}
+	</code></pre>
+	<p>Certaines erreurs peuvent survenir au sein même du code (exemple de la division par zéro). D'autres peuvent venir de facteurs externes (par exemple un serveur distant qui ne répond pas)</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exceptions</h4>
+	<p>Une <i>exception</i> est un moyen de gérer ces erreurs.</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		function divideBy(x, y){
+			if(y == 0){
+				throw new Error("Division by zero");
+			}
+			return x / y;
+		}
+	</code></pre>
+	<p>Ce code <i>lance</i> une exception si l'opération est invalide.</p>
+	<p>Lancer une exception arrête l'exécution du code, de la même manière qu'un <code>return</code>. Dans ce cas aucune valeur ne sera retournée, et la fonction lancera une exception.</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exceptions</h4>
+	<table>
+		<tr>
+			<td>
+				<img width="400px" style="text-align:center" src="assets/exception_example.png">
+			</td>
+		</tr>
+	</table>
+	<p>Une exception qui n'est pas <i>attrapée</i> (<i>catch</i>) arrêtera l'exécution du script et s'affichera dans la console.</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exceptions</h4>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		function mean(array){
+			if(array.length == 0){
+				throw new Error("Mean of empty array");
+			}
+			let sum = 0;
+			for(const x of array) sum += x;
+			return sum / array.length;
+		}
+
+		const array = [];
+		try {
+			console.log("Mean of array is : ", mean(array));
+		} catch (error) {
+			console.log("The function threw an error : ", error.message);
+			// Affichera "The function threw an error : Mean of empty array"
+		}
+	</code></pre>
+	<p>Les exceptions peuvent être attrapées avec un bloc <code>try ... catch</code>. Si le code dans le bloc <code>try</code> provoque une exception, le bloc <code>catch</code> sera exécuté et le script continuera après le bloc.</p>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exceptions</h4>
+	<p>En pratique, les exceptions doivent être réservées pour des cas particuliers, où la fonction ne peut pas continuer.</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		function isAdult(age){
+			if(age &lt; 18){ // Mauvaise idée, il ne s'agit pas ici d'une erreur.
+				throw new Error("Not an adult");
+			}
+			return true;
+		}
+	</code></pre>
+	<p>L'utilisation de <i>Error</i> délègue la responsabilité de traiter l'erreur à une autre partie du script</p>
+	<div class="advice">
+		<ul>
+			<li>L'erreur peut être gérée à l'endroit où elle survient : la traiter à cet endroit</li>
+			<li>L'erreur est due à une cause externe ou ne peut pas être traitée : lancer une exception</li>
+		</ul>
+	</div>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exceptions</h4>
+	<p>Il existe plusieurs types d'exceptions</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		function getArrayValue(array, index){
+			if(index &lt; 0 || index >= array.length){
+				throw new RangeError("Access out of bounds"); // Pour des index invalides
+			}
+			return array[index];
+		}
+
+		function addNumberToArray(array, number){
+			if(typeof number != "number"){
+				throw new TypeError("number does not have the right type"); // Pour des types invalides
+			}
+			array.push(number);
+		}
+	</code></pre>
+	<p>Il en existe encore d'autres, pour d'autres cas plus spécifiques</p>
+	<p>Grâce à l'héritage, vous pouvez même définir vos propres types d'erreur en les faisant hériter de <code>Error</code></p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exceptions</h4>
+	<br>
+	<p>Site officiel : <br>
+		<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/throw">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/throw</a><br>
+		<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/try...catch</a>
+	</p>
+    <br>
+	<p>W3Schools: <a href="https://www.w3schools.com/js/js_errors_intro.asp">https://www.w3schools.com/js/js_errors_intro.asp</a></p>
+</section>

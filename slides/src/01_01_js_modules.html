@@ -1,0 +1,180 @@
+<section>
+	<br><br><br>
+	<h1>JavaScript</h1>
+	<h2>Notions avancées</h2>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules</h4>
+    <p>
+        Il est bien de découper son code en plusieurs fichiers. 
+        Par exemple, on peut définir la classe <code>Disk</code> dans son propre fichier, avec une constante globale pour le disque unité en (0;0).
+        <pre><code data-trim data-noescape class="language-javascript">
+            // Fichier Disk.js
+            class Disk{
+                constructor(x, y, radius){
+                    this.x = x;
+                    this.y = y;
+                    this.radius = radius;
+                }
+                area(){
+                    return Math.PI*this.radius*this.radius;
+                }
+            }
+
+            const UNIT_DISK = new Disk(0, 0, 1);
+        </code></pre>
+        Comment utiliser ce code dans un autre fichier ?
+    </p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules</h4>
+    <p>
+        Il serait possible d'importer tous les fichiers dans le HTML principal, à l'aide de balises <code>&lt;script&gt;</code>, mais cela a plusieurs inconvénients, en particulier
+        <ol>
+            <li>Tout est importé globalement, ce qui génère des conflits de noms. Ainsi, dans l'exemple précédent, il ne peut y avoir un autre objet ou variable se nommant <code>Disk</code>.</li>
+            <li>Si une librairie est composée de plusieurs fichiers, ils doivent tous être importés un par un. Cela devient encombrant avec des centaines de fichiers.</li>
+            <li>La gestion des dépendances est très manuelle, complexe, et sujette aux erreurs.</li>
+        </ol>
+        <br><br>
+        Il existe une solution à tous ces problèmes : <b>Les modules</b>
+    </p>
+    <aside class="notes">
+        Les modules fournissent aussi, comme on va le voir plus loin, une notion d'encapsulation.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules</h4>
+    <p>
+        Un module est un code contenu dans un fichier qui s'exécute dans un contexte isolé. Tout ce qui n'est pas exporté d'un module ne sera pas visible depuis l'extérieur. <br>
+        Pour exporter un élément, on utilise le mot-clé <code>export</code>.
+    </p>
+        <pre><code data-trim data-noescape class="language-javascript">
+            // Fichier Disk.js    
+            export class Disk{                            // Classe exportée
+                constructor(x, y, radius){
+                    this.x = x;
+                    this.y = y;
+                    this.radius = radius;
+                }
+                area(){
+                    return Math.PI*this.radius*this.radius;
+                }
+            }
+
+            export const UNIT_DISK_AREA = new Disk(0, 0, 1).area(); // Constante exportée
+            const UNIT_DISK_PERIMETER = 2*Math.PI;                  // Constante non exportée
+        </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules</h4>
+    <p>Pour importer un élément d'un module, on utilisera le mot-clé <code>import</code></p>
+        <pre><code data-trim data-noescape class="language-javascript">
+            // Fichier main.js
+            import { Disk, UNIT_DISK_AREA } from "./Disk.js"
+
+            const myDisk = new Disk(2, 3, 1.5);
+
+            if(myDisk.area() > UNIT_DISK_AREA) {
+                console.log("myDisk plus grand que le disque unité");
+            }
+
+            import { UNIT_DISK_PERIMETER } from "./Disk.js" // Erreur ! Car non exporté
+            
+        </code></pre>
+    <p>Les imports seront indiqués entre <code>{</code> et <code>}</code>, même si un seul élément est importé</p>
+    <p>On ne peut importer des éléments que dans un module. En utilisant ce principe, tout notre code sera un ensemble de modules.</p>
+    <aside class="notes">
+        Il est courant de faire du re-export, c'est-à-dire d'importer des éléments dans un module et de les réexporter. Cela permet à un utilisateur de ne pas faire trop d'imports différents. Par exemple, si vous créez une librairie avec un module "Button.js" et un module "Slider.js", vous pouvez créer un module "Widget.js" qui importe puis réexporte Button et Slider. En utilisant votre librairie il suffira de faire "import {Button, Slider} from 'Widget.js'".
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules</h4>
+    <p>Pour chaque module, il est possible d'indiquer un export par défaut</p>
+        <pre><code data-trim data-noescape class="language-javascript">
+            // Fichier Disk.js    
+            export default class Disk{ ... } // Export par défaut
+            export const UNIT_DISK = new Disk(0, 0, 1);
+        </code></pre>
+    <p>
+        L'export par défaut peut être importé en lui donnant n'importe quel nom, sans accolades.
+        JavaScript sait qu'un import sans accolades est forcément l'export par défaut du module.
+    </p>
+        <pre><code data-trim data-noescape class="language-javascript">
+            // Fichier main.js    
+            import Disk from "./Disk.js" // Valide
+            const disk = new Disk(1,2,3);
+        </code></pre>
+        <pre><code data-trim data-noescape class="language-javascript">
+            // Fichier main.js
+            import Disque from "./Disk.js" // Également valide, ici Disk est appelé Disque
+            const disk = new Disque(1,2,3);
+        </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules</h4>
+    <p>Il est possible de renommer un import avec le mot-clé <code>as</code>. Cela est particulièrement utile quand on importe deux éléments dont les noms sont les mêmes.</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        import { UNIT_DISK as DISQUE_UNITE } from "./Disk.js"
+    </code></pre>
+    C'est typiquement le cas quand on utilise plusieurs librairies différentes dans un seul fichier
+    <pre><code data-trim data-noescape class="language-javascript">
+        import { Color as ColorLib1} from "./my/library1/Color.js"
+        import { Color as ColorLib2} from "./my/library2/Color.js"
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules</h4>
+    <p>Il est possible de mélanger les imports et les imports par défaut</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        // Importe l'export par défaut sous le nom de "Disque", 
+        // et l'export "UNIT_DISK" sous le nom de "DISQUE_UNITE"
+        import Disque, {UNIT_DISK as DISQUE_UNITE} from "./Disk.js"
+    </code></pre>
+    <br>
+    <p class="warning">Attention à ne pas abuser du renommage. À utiliser seulement pour éviter des collisions de noms ou éviter des ambiguïtés, sinon la compréhension du code devient très difficile.</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules</h4>
+    <p>Pour importer un module JavaScript dans du HTML, on utilise la balise <code>&lt;script&gt;</code> avec <code>type="module"</code></p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        &lt;script type="module"&gt;
+            import Disk from "./Disk.js";
+            /* ... */
+        &lt;/script&gt;
+    </code></pre>
+    <p>Attention : l'isolation vaut toujours dans ce cas, et le contenu de la balise <code>script</code> sera isolé du reste du code</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        &lt;script type="module"&gt;
+            const value = 10;
+        &lt;/script&gt;
+        &lt;script type="module"&gt;
+            console.log(value); // value n'existe pas ici
+        &lt;/script&gt;
+    </code></pre>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les modules - Références</h4>
+	<br>
+	<p>Site officiel : <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules</a></p>
+    <br>
+	<p>W3Schools: <a href="https://www.w3schools.com/js/js_modules.asp">https://www.w3schools.com/js/js_modules.asp</a></p>
+</section>

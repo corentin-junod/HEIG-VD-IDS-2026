@@ -1,0 +1,221 @@
+<section>
+	<br><br><br>
+	<h1>JavaScript</h1>
+	<h2>L'héritage</h2>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'héritage</h4>
+    <p>Supposons que l'on ait une classe <code>MyDate</code></p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class MyDate {
+            constructor(year, month, day){
+                this.year = year;
+                this.month = month;
+                this.day = day;
+            }
+            getDate(){
+                return this.day+"."+this.month+"."+this.year;
+            }
+        }
+
+        const date = new MyDate(2026, 10, 15);
+        console.log(date.getDate()); // 15.10.2026
+    </code></pre>
+    <p class="fragment fade-in">
+        On souhaite maintenant créer une deuxième classe <code>MyDateTime</code>, stockant en plus l'heure.
+        Il serait bien de pouvoir réutiliser la classe <code>MyDate</code>, sans devoir réimplémenter tout son contenu.
+    </p>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'héritage</h4>
+    <p>JavaScript permet de le faire de la manière suivante</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class MyDateTime extends MyDate {    // Le mot-clé "extends" indique l'héritage
+            constructor(year, month, day, hours, minutes, seconds){
+                super(year, month, day); // "super" est le constructeur de la classe parente
+                this.hours = hours;
+                this.minutes = minutes;
+                this.seconds = seconds;
+            }
+            getTime(){
+                return this.hours+":"+this.minutes+":"+this.seconds;
+            }
+        }
+
+        const dateTime = new MyDateTime(2023, 12, 23, 12, 30, 45);
+        console.log(dateTime.getDate()); // 23.12.2023  Les méthodes parentes sont accessibles
+        console.log(dateTime.getTime()); // 12:30:45
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'héritage</h4>
+    <p>Supposons que l'on ait une méthode <code>print</code> dans la classe <code>MyDate</code>.</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class MyDate {
+            constructor(year, month, day){
+                this.year = year;
+                this.month = month;
+                this.day = day;
+            }
+            getDate(){
+                return this.day+"."+this.month+"."+this.year;
+            }
+            print(){
+                console.log("Nous sommes le "+this.getDate());
+            }
+        }
+
+        const date = new MyDate(2026, 10, 15);
+        date.print(); // Nous sommes le 15.10.2026
+    </code></pre>
+    <p>Il va falloir modifier cette méthode dans la classe enfant <code>MyDateTime</code>.</p>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'héritage</h4>
+    <p>On peut écraser (<i>override</i>) des méthodes venues des classes parentes.</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class MyDateTime extends MyDate {    // Le mot-clé "extends" indique l'héritage
+            constructor(year, month, day, hours, minutes, seconds){
+                super(year, month, day); // "super" est le constructeur de la classe parente
+                this.hours = hours;
+                this.minutes = minutes;
+                this.seconds = seconds;
+            }
+            getTime(){
+                return this.hours+":"+this.minutes+":"+this.seconds;
+            }
+            print(){
+                console.log("Nous sommes le "+this.getDate()+" à "+this.getTime());
+            }
+        }
+        const dateTime = new MyDateTime(2023, 12, 23, 12, 30, 45);
+        dateTime.print(); // Nous sommes le 23.12.2023 à 12:30:45
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'héritage</h4>
+    <p>Pour utiliser spécifiquement une méthode de la classe parente, on utilise aussi <code>super</code></p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        class MyDateTime extends MyDate { 
+            constructor(year, month, day, hours, minutes, seconds){ /* ... */ }
+            getTime(){
+                return this.hours+":"+this.minutes+":"+this.seconds;
+            }
+            print(){
+                console.log("Nous sommes le "+this.getDate()+" à "+this.getTime());
+            }
+            printDate(){
+                // Ici on doit utiliser super, car si on avait utilisé this.print(), 
+                // la fonction ci-dessus aurait été appelée (à cause de l'override)
+                super.print();
+            }
+        }
+        const dateTime = new MyDateTime(2023, 12, 23, 12, 30, 45);
+        dateTime.printDate(); // Nous sommes le 23.12.2023
+    </code></pre>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'héritage</h4>
+    <p>Comment choisir entre héritage et attribut ?</p>
+    <p class="fragment fade-in">X sera un attribut de Y si on peut dire <i>"Un Y <b>possède</b> un X"</i></p>
+    <p class="fragment fade-in">X sera un parent de Y si on peut dire <i>"Un Y <b>est</b> un X"</i></p>
+    <table class="fragment fade-in">
+        <tr>
+            <td>
+                <pre><code data-trim data-noescape class="language-javascript">
+                    class Motor{
+                        constructor(){/*...*/}
+                        start(){/*...*/}
+                        stop(){/*...*/}
+                    }
+                    class Car extends Motor {   
+                        constructor(){/*...*/}
+                        brake(){/*...*/}
+                    }
+                </code></pre>
+            </td>
+            <td>
+                <pre><code data-trim data-noescape class="language-javascript">
+                    class Motor{
+                        constructor(){/*...*/}
+                        start(){/*...*/}
+                        stop(){/*...*/}
+                    }
+                    class Car {   
+                        constructor(){
+                            this.motor = new Motor();
+                            /*...*/
+                        }
+                        brake(){/*...*/}
+                    }
+                </code></pre>
+            </td>
+        </tr>
+    </table>
+    <p class="fragment fade-in">L'idée de droite est la bonne : <i>Une voiture possède un moteur</i>, une voiture n'est <i>pas</i> un moteur</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'héritage</h4>
+    <p>Comment choisir entre héritage et attribut ?</p>
+    <p>X sera un attribut de Y si on peut dire <i>"Un Y <b>possède</b> un X"</i></p>
+    <p>X sera un parent de Y si on peut dire <i>"Un Y <b>est</b> un X"</i></p>
+    <table>
+        <tr>
+            <td>
+                <pre><code data-trim data-noescape class="language-javascript">
+                    class Shape{
+                        constructor(){/*...*/}
+                        setColor(){/*...*/}
+                    }
+                    class Disk{   
+                        constructor(){
+                            this.shape = new Shape();
+                        }
+                        area(){/*...*/}
+                    }
+                </code></pre>
+            </td>
+            <td>
+                <pre><code data-trim data-noescape class="language-javascript">
+                    class Shape{
+                        constructor(){/*...*/}
+                        setColor(){/*...*/}
+                    }
+                    class Disk extends Shape{   
+                        constructor(){/*...*/}
+                        area(){/*...*/}
+                    }
+                </code></pre>
+            </td>
+        </tr>
+    </table>
+    <p class="fragment fade-in">L'idée de droite est la bonne : <i>Un disque est un type de forme</i>, un disque ne possède <i>pas</i> une forme (la forme n'est pas un composant, un attribut du disque)</p>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'héritage - Références</h4>
+	<br>
+	<p>Site officiel : <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain">https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Inheritance_and_the_prototype_chain</a></p>
+    <br>
+	<p>W3Schools: <a href="https://www.w3schools.com/js/js_class_inheritance.asp">https://www.w3schools.com/js/js_class_inheritance.asp</a></p>
+</section>

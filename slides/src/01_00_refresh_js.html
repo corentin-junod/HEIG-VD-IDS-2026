@@ -16,12 +16,12 @@
 			<li>Le JavaScript est créé en 1995</li>
 			<li>La syntaxe est standardisée sous le nom d'<i>ECMAScript</i></li>
 			<li>Depuis 2015, une nouvelle version sort chaque année</li>
-			<li>Le web utilise ce language pour scripter ses pages, tous les navigateurs savent interpréter du JavaScript</li>
+			<li>Le web utilise ce langage pour scripter ses pages, tous les navigateurs savent interpréter du JavaScript</li>
 		</ul>
 	</p>
 	<br>
 	<p class="info">
-		Il existe un language de programmation nommé Java, qui n'a absolument rien à voir avec JavaScript. <br>
+		Il existe un langage de programmation nommé Java, qui n'a absolument rien à voir avec JavaScript. <br>
 		Il ne faut pas les confondre
 	</p>
 </section>
@@ -36,7 +36,7 @@
 			<li>
 				W3Schools : <a href="https://www.w3schools.com/js/">https://www.w3schools.com/js/</a>
 				<br>
-				Références et tutoriels facile d'accès. Excellent pour débuter 
+				Références et tutoriels faciles d'accès. Excellent pour débuter 
 			</li>
 			<li>
 				MDN : <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">https://developer.mozilla.org/en-US/docs/Web/JavaScript</a>
@@ -45,7 +45,7 @@
 			</li>
 		</ul>
 	</p>
-	<p>N'hésitez pas à chercher sur internet dès que vous avez une questions. <br><i>Savoir utiliser une documentation doit faire partie de vos compétences</i></p>
+	<p>N'hésitez pas à chercher sur internet dès que vous avez une question. <br><i>Savoir utiliser une documentation doit faire partie de vos compétences</i></p>
 </section>
 
 
@@ -121,15 +121,15 @@
 	<h4>Les types</h4>
 	<br>
 	<p>
-		Bien que le typage sont implicite, toutes les variables en JavaScript possèdent un type.<br>
+		Bien que le typage soit implicite, toutes les variables en JavaScript possèdent un type.<br>
 		Il existe 7 types de base.
 	</p>
 	<pre><code data-trim data-noescape class="language-javascript">
 		const maVariable = "JavaScript";    // Chaîne de caractères
-		const maVariable = 3.14;            // Nombre réel
+		const maVariable = 3.14;            // Nombre réel (sur 64 bits)
 		const maVariable = true;            // Booléen
 		const maVariable = null;            // null, indique l'absence d'un objet
-		const maVariable = undefined;       // undefined, indique "pas de valeur", "non déclaré"
+		const maVariable = undefined;       // undefined, indique "pas de valeur"
 		const maVariable = BigInt(3);       // BigInt, entier sans limites
 		const maVariable = Symbol("foo");   // Symbol, pas utile dans ce cours
 	</code></pre>	
@@ -141,13 +141,13 @@
 			const maVariable = false;
 			const typeDeMaVariable = typeof maVariable; // typeDeMaVariable vaut "boolean"
 		</code></pre>
-		<p>Il existe également d'autres types non basiques, qui sont des structures stockant des types basiques (tableaux, objets, etc).</p>
+		<p>Il existe également d'autres types non basiques, qui sont des structures stockant des types basiques (tableaux, objets, etc.).</p>
 	</div>	
 	
 	<aside class="notes">
-JavaScript est un language à &lt;b&gt;typage dynamique implicite&lt;/b&gt; &lt;br&gt;
-Implicite signifie que le language infère le type selon le contexte, on n'indique jamais explicitement le type d'une variable &lt;br&gt;
-Dynamique signifie que la vérification des types est faite lors de l'execution. Par opposition a des languages tels que le C/C++ où la vérification des types est faites lors de la compilation. &lt;br&gt;&lt;br&gt;
+JavaScript est un langage à &lt;b&gt;typage dynamique implicite&lt;/b&gt; &lt;br&gt;
+Implicite signifie que le langage infère le type selon le contexte, on n'indique jamais explicitement le type d'une variable &lt;br&gt;
+Dynamique signifie que la vérification des types est faite lors de l'exécution. Par opposition à des langages tels que le C/C++ où la vérification des types est faite lors de la compilation. &lt;br&gt;&lt;br&gt;
 
 Même si on ne déclare pas explicitement le type d'une variable, JavaScript assigne en interne un type à chaque variable.
 	</aside>
@@ -175,7 +175,7 @@ Même si on ne déclare pas explicitement le type d'une variable, JavaScript ass
 	</p>
 	
 	<aside class="notes">
-A part les types de bases, tous les autres sont des "objects". Cela veut dire que tous les types de JavaScript suivent une logique similaire et peuvent facilement être affichés dans la console. La console des navigateur, quand un objet y est affiché, ajoute même une interface pour naviguer dans les propriétés de l'objet. Cela est extrêmement pratique pour debugger.
+À part les types de base, tous les autres sont des "objets". Cela veut dire que tous les types de JavaScript suivent une logique similaire et peuvent facilement être affichés dans la console. La console des navigateurs, quand un objet y est affiché, ajoute même une interface pour naviguer dans les propriétés de l'objet. Cela est extrêmement pratique pour debugger.
 	</aside>
 </section>
 
@@ -210,7 +210,7 @@ Exemple :
 <pre>
 const a = [];
 
-// Cette ligne est valide, car comme "a.length &lt;= 0" est vrai, la condition s'execute sans évaluer la suite
+// Cette ligne est valide, car comme "a.length &lt;= 0" est vrai, la condition s'exécute sans évaluer la suite
 if(a.length &lt;= 0 || a[0][0] == 2){ console.log("Valide"); }
 
 // Cette ligne provoque une erreur, car "a[0]" est undefined et donc "a[0][0]" est invalide 
@@ -229,7 +229,7 @@ if(a[0][0] == 2 || a.length &lt;= 0){ console.log("Erreur"); }
 	<pre><code data-trim data-noescape class="language-javascript">
 		let text = "";
 		while(text != "Bonjour"){
-			text = prompt("Dites 'Bonjour' !");  // prompt() Demande à l'utilisateur d'entrer un texte
+			text = prompt("Dites 'Bonjour' !");  // prompt() demande à l'utilisateur d'entrer un texte
 		}
 		console.log("Vous avez dit bonjour !");
 	</code></pre>
@@ -245,7 +245,7 @@ if(a[0][0] == 2 || a.length &lt;= 0){ console.log("Erreur"); }
 	</div>
 
 	<aside class="notes">
-		Les boucles infinie sont particulièrement dangereuses car elles bloquent complètement la page, et il n'y a pas d'autres choix que de recharger la page. <br><br>
+		Les boucles infinies sont particulièrement dangereuses car elles bloquent complètement la page, et il n'y a pas d'autre choix que de recharger la page. <br><br>
 
 		S'il n'est pas évident que la boucle s'arrêtera quoi qu'il arrive, pensez à mettre une condition d'arrêt, ou utiliser une boucle <i>for</i> à la place.
 	</aside>
@@ -271,7 +271,7 @@ if(a[0][0] == 2 || a.length &lt;= 0){ console.log("Erreur"); }
 	</p>
 	<p>
 		Ce type de boucle est utile quand <i>on connait le nombre de répétitions à faire</i>.<br>
-		Elle permet d'éviter des erreurs qui créent des bouclent infinies, car il est plus simple de voir que la boucle s'arrêtera dans tous les cas.
+		Elle permet d'éviter des erreurs qui créent des boucles infinies, car il est plus simple de voir que la boucle s'arrêtera dans tous les cas.
 
 	</p>
 
@@ -302,7 +302,7 @@ Toute boucle <i>for</i> peut être écrite sous forme de boucle <i>while</i> et 
 		const d = [[1,2,3], [4,5,6], [7,8,9]];  // Il est possible d'avoir des tableaux de tableaux
 		console.log(d[1][2]);                   // Affiche 6
 	</code></pre>
-	<p>La numérotation des tableaux commence toujours à 0. <code>tab[3]</code> affichera donc le 4eme élément de tab.</p>
+	<p>La numérotation des tableaux commence toujours à 0. <code>tab[3]</code> affichera donc le 4e élément de tab.</p>
 	<p>Techniquement, en JavaScript, les tableaux sont des objets. <code>typeof []</code> retourne <code>"object"</code>
 </p>
 
@@ -347,7 +347,7 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
     </p>
     <aside class="notes">
         En JS, les fonctions peuvent être déclarées en dessous de leur premier appel, cela n'a pas d'importance. On appelle cette propriété le <i>hoisting</i>. 
-        Quand un language possède des fonctions utilisables comme n'importe quel objet, passables en paramètres et retournables par d'autres fonctions, il est dit avoir des "<a href="https://en.wikipedia.org/wiki/First-class_function">first-class functions</a>".
+        Quand un langage possède des fonctions utilisables comme n'importe quel objet, passables en paramètres et retournables par d'autres fonctions, il est dit avoir des "<a href="https://en.wikipedia.org/wiki/First-class_function">first-class functions</a>".
     </aside>
 </section>
 
@@ -373,9 +373,10 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
             console.log(apply([1,2,3,4], mul2)) // 2,4,6,8
             console.log(apply([1,2,3,4], squared)) // 1,4,9,16
         </code></pre>
+    </p>
     <aside class="notes">
         Utiliser la notation <code>mul2</code> indique d'utiliser la fonction elle-même <br>
-        Utiliser la notation <code>mul2(x)</code> appelle (execute) la fonction avec la valeur <code>x</code>
+        Utiliser la notation <code>mul2(x)</code> appelle (exécute) la fonction avec la valeur <code>x</code>
     </aside>
 </section>
 
@@ -471,8 +472,8 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
     <p>Lire une clé qui n'existe pas retourne la valeur <code>undefined</code>.</p>
     <p>Assigner une clé qui n'existe pas crée cette clé.</p>
     <aside class="notes">
-        La notation avec un point est simple et ressemble beaucoup à d'autres languages orientés objet.<br>
-        La notation avec des crochet permet d'accéder à un élément selon la valeur d'une variable. Par exemple : <br>
+        La notation avec un point est simple et ressemble beaucoup à d'autres langages orientés objet.<br>
+        La notation avec des crochets permet d'accéder à un élément selon la valeur d'une variable. Par exemple : <br>
         <code>const attr = 'nombre';</code><br><code>myObject[attr] = 9;</code>
     </aside>
 </section>
@@ -517,7 +518,7 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
 <section>
 	<h3>JavaScript</h3>
 	<h4>Les objets</h4>
-    <p>On appelle les variable stockées dans un objet des <i>attributs</i></p>
+    <p>On appelle les variables stockées dans un objet des <i>attributs</i></p>
     <p>On appelle les fonctions stockées dans un objet des <i>méthodes</i></p>
     <pre><code data-trim data-noescape class="language-javascript">
         const voiture = {
@@ -551,8 +552,8 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
         console.log(p.x);               // 10
         p.display()                     // (10;20)
     </code></pre>
-    <p>Le mot clé <code>this</code> est une référence vers le contexte courant, c'est-à-dire, dans ce cas, l'objet qui est créé par la fonction.</p>
-    <p>Le mot clé <code>new</code> indique de faire, à partir contexte de la fonction, un nouvel objet. C'est-à-dire, de passer tout ce qui a été assigné à <code>this</code> dans <code>p</code></p>
+    <p>Le mot-clé <code>this</code> est une référence vers le contexte courant, c'est-à-dire, dans ce cas, l'objet qui est créé par la fonction.</p>
+    <p>Le mot-clé <code>new</code> indique de faire, à partir du contexte de la fonction, un nouvel objet. C'est-à-dire, de passer tout ce qui a été assigné à <code>this</code> dans <code>p</code></p>
     <aside class="notes">
         Un constructeur est simplement une fonction utilisée pour construire des objets. Elle n'a rien de particulier, à part qu'elle est utilisée dans ce but.
     </aside>
@@ -562,7 +563,7 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
 	<h3>JavaScript</h3>
 	<h4>L'orienté objet et les classes</h4>
     <p>
-        En JavaScript moderne, il existe un syntaxe plus proche des autres languages orientés objet.<br>
+        En JavaScript moderne, il existe une syntaxe plus proche des autres langages orientés objet.<br>
         Nous utiliserons cette syntaxe, plus lisible pour des objets complexes.
     </p>
     <pre><code data-trim data-noescape class="language-javascript">
@@ -580,13 +581,13 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
         console.log(p.x);               // 10
         p.display()                     // (10;20)
     </code></pre>
-    <p>Les syntaxes de cette slides et la précédente sont équivalentes</p>
+    <p>Les syntaxes de cette slide et de la précédente sont équivalentes</p>
      <aside class="notes">
-        On dira "classe" pour parler du type conceptuel, mais pas d'un objet précis. Ainsi dans la "classe" Point possède les attributs x, y et la méthode display.
-        On dira "objet" pour parler d'une instance de la classe. Ainsi la constance p est un objet de type Point, c'est-à-dire qui est une instance de la classe Point.
+        On dira "classe" pour parler du type conceptuel, mais pas d'un objet précis. Ainsi la "classe" Point possède les attributs x, y et la méthode display.
+        On dira "objet" pour parler d'une instance de la classe. Ainsi la constante p est un objet de type Point, c'est-à-dire une instance de la classe Point.
         Par convention, on commencera le nom des classes par une majuscule (Point) et on commencera le nom des objets par une minuscule (p).
         <br><br>
-        La notation de cette slide est ce qu'on appelle un <i>sucre syntaxique</i>, c'est à dire une nouvelle notation pour quelque chose qu'on pouvait déjà faire avant, mais plus pratique. Elle n'apporte aucune fonction supplémentaire. JavaScript, au moment d'executer ce code, va le traiter exactement comme celui de la slide précédente, et n'importe quelle classe peut être écrite d'une manière ou de l'autre.
+        La notation de cette slide est ce qu'on appelle un <i>sucre syntaxique</i>, c'est-à-dire une nouvelle notation pour quelque chose qu'on pouvait déjà faire avant, mais plus pratique. Elle n'apporte aucune fonction supplémentaire. JavaScript, au moment d'exécuter ce code, va le traiter exactement comme celui de la slide précédente, et n'importe quelle classe peut être écrite d'une manière ou de l'autre.
     </aside>
 </section>
 
@@ -607,10 +608,10 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
         }
         
         const disk = new Disk(4, 5, 8);
-        disk.radius = -3;               // Rien n'empêche d'attribuer des valeurs ne faisant aucun sens
+        disk.radius = -3;               // Rien n'empêche d'attribuer des valeurs n'ayant aucun sens
         console.log(disk.perimeter());  // Dans ce cas l'objet se comportera de manière inattendue
     </code></pre>
-    <p>On aimerait vérifier que les attributs soient toujours cohérents</p>
+    <p>On aimerait vérifier que les attributs sont toujours cohérents</p>
 </section>
 
 <section>
@@ -622,7 +623,7 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
             constructor(x, y, radius){
                 this.x = x;
                 this.y = y;
-                this._radius = radius;
+                this.radius = radius;
             }
             set radius(r){
                 this._radius = r > 0 ? r : 0; // Ou n'importe quelle autre manière de gérer ce cas
@@ -657,7 +658,7 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
         disk.area = 5;              // On peut également l'assigner
         console.log(disk.radius);   // Et cela aura modifié la valeur de radius
     </code></pre>
-    <p>L'utilisation des getters et de setters n'est pas du tout obligatoire, et certaines personnes écriraient clairement des méthodes <code>getArea()</code> et <code>setArea()</code></p>
+    <p>L'utilisation des getters et des setters n'est pas du tout obligatoire, et certaines personnes écriraient clairement des méthodes <code>getArea()</code> et <code>setArea()</code></p>
 </section>
 
 
@@ -678,7 +679,7 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
     <p>
         Cours de géoinformatique de Bachelor 2025 (GIN 2025) : <br>
         Page GitHub : <a href="https://github.com/corentin-junod/HEIG-VD-GIN-2025">https://github.com/corentin-junod/HEIG-VD-GIN-2025</a> <br>
-        Slides : <a href="https://github.com/corentin-junod/HEIG-VD-GIN-2025/tree/main/slides/pdfs"">https://github.com/corentin-junod/HEIG-VD-GIN-2025/tree/main/slides/pdfs</a>
+        Slides : <a href="https://github.com/corentin-junod/HEIG-VD-GIN-2025/tree/main/slides/pdfs">https://github.com/corentin-junod/HEIG-VD-GIN-2025/tree/main/slides/pdfs</a>
     </p>
 </section>
 
@@ -709,7 +710,7 @@ est un tableau à 3 dimensions auquel on accédera, par exemple, par <i>m[2][1][
 
 <aside class="notes">
 
-Voici un exemple simple, rien de surprenant, mais il est intéressant d'examiner en détail ce que JavaScript fait lors de l'execution de ces lignes.
+Voici un exemple simple, rien de surprenant, mais il est intéressant d'examiner en détail ce que JavaScript fait lors de l'exécution de ces lignes.
 </aside>
 </section>
 
@@ -750,25 +751,25 @@ Voici un exemple simple, rien de surprenant, mais il est intéressant d'examiner
 	<img src="assets/immutable3.svg">
 
 	<p>
-		En JavaScript les types de base sont <i>immuables</i>. Un assignment créera toujours une copie.
+		En JavaScript les types de base sont <i>immuables</i>. Une assignation créera toujours une copie.
 	</p>
 
 	<aside class="notes">
 
-Les types de base sont des variables qui *ne changent jamais de valeur*. On dit qu'elles sont immuables. Lors d'un assignment, JavaScript va copier la valeur dans un nouvel espace mémoire, indépendant du premier. Ainsi, modifier la variable `b`dans l'exemple précédent ne modifie pas `a`, car il s'agit de deux variables séparées.
+Les types de base sont des variables qui *ne changent jamais de valeur*. On dit qu'elles sont immuables. Lors d'une assignation, JavaScript va copier la valeur dans un nouvel espace mémoire, indépendant du premier. Ainsi, modifier la variable `b` dans l'exemple précédent ne modifie pas `a`, car il s'agit de deux variables séparées.
 
 En réalité, si vous assignez une nouvelle valeur à `a`, par exemple avec le code :
 <pre>
 let a = 5;
 a = 10;
 </pre>
-La première ligne assignera à `a` une valeur 5 stockée en mémoire, puis la seconde ligne créera un autre espace mémoire et assignera ce dernier à `a`. La valeur d'origine `5`ne sera pas modifiée.
-On peut le constater si `a`est une chaîne de caractères : 
+La première ligne assignera à `a` une valeur 5 stockée en mémoire, puis la seconde ligne créera un autre espace mémoire et assignera ce dernier à `a`. La valeur d'origine `5` ne sera pas modifiée.
+On peut le constater si `a` est une chaîne de caractères : 
 <pre>
 let a = "Bonjour";
 a[0] = "A";
 </pre>
-Faire un `console.log(a)` affichera "Bonjour" et non "Aonjour", même si on a assigné "A" au premier caractère. Cet assignment n'a eu aucun effet car `a` est d'un type de base et donc immuable.
+Faire un `console.log(a)` affichera "Bonjour" et non "Aonjour", même si on a assigné "A" au premier caractère. Cette assignation n'a eu aucun effet car `a` est d'un type de base et donc immuable.
 </aside>
 </section>
 
@@ -795,7 +796,7 @@ Faire un `console.log(a)` affichera "Bonjour" et non "Aonjour", même si on a as
 	</p>
 
 <aside class="notes">
-Ici on remarque que modifier `b` modifie également `a`. Le comportement est différent que celui du cas précédent, pourquoi?
+Ici on remarque que modifier `b` modifie également `a`. Le comportement est différent de celui du cas précédent, pourquoi ?
 </aside>
 </section>
 
@@ -839,14 +840,14 @@ b[1] = 10; // Comme "b" utilise la même valeur que "a", changer "b" change impl
 	<img src="assets/immutable6.svg">
 
 	<p>
-		En JavaScript les types non basiques sont <i>mutables</i>. Un assignment créera une référence vers l'objet.
+		En JavaScript les types non basiques sont <i>mutables</i>. Une assignation créera une référence vers l'objet.
 	</p>
 
 	<aside class="notes">
 
 		Contrairement aux types de base, quand on assigne un objet, celui-ci n'est pas copié. La variable assignée pointera vers le même espace mémoire que la variable originale. Ainsi, changer l'une changera implicitement l'autre aussi.
 
-Les objets sont *mutable*, il est possible de les changer directement sans créer de copie. C'est bien le comportement attendu : 
+Les objets sont *mutables*, il est possible de les changer directement sans créer de copie. C'est bien le comportement attendu : 
 <pre>
 let a = [1,2,3];
 a[0] = 4;
@@ -858,7 +859,7 @@ Il devient clair pourquoi un code comme celui-ci est valide :
 const a = [1,2,3];
 a[0] = 10;
 </pre>
-Bien que `a` soit `const`, il est autorisé de modifier un élément du tableau, car `a` est toujours assigné au même objet. C'est l'objet lui-même que l'on change avec la seconde instruction. Le mot clé `const` ne garanti donc *pas* que l'objet assigné à une variable ne changera pas, il garanti que la variable ne pourra pas être assignée à autre chose.
+Bien que `a` soit `const`, il est autorisé de modifier un élément du tableau, car `a` est toujours assigné au même objet. C'est l'objet lui-même que l'on change avec la seconde instruction. Le mot-clé `const` ne garantit donc *pas* que l'objet assigné à une variable ne changera pas, il garantit que la variable ne pourra pas être assignée à autre chose.
 
 </aside>
 </section>
@@ -870,8 +871,8 @@ Bien que `a` soit `const`, il est autorisé de modifier un élément du tableau,
     <p>L'observation des slides précédentes implique plusieurs constats :</p>
     <p>
         <ul>
-            <li>Ce changement "implicite" s'appelle un <i>effet de bord</i>. Il peut arriver avec n'importe quel type non basique (tableaux, objets, etc)</li>
-            <li>Les effets de bords sont dangereux, car difficile à prévoir. Les attributs d'un objet peuvent subir des effets de bord, par exemple.</li>
+            <li>Ce changement "implicite" s'appelle un <i>effet de bord</i>. Il peut arriver avec n'importe quel type non basique (tableaux, objets, etc.)</li>
+            <li>Les effets de bord sont dangereux, car difficiles à prévoir. Les attributs d'un objet peuvent subir des effets de bord, par exemple.</li>
             <li>Des tableaux et objets constants peuvent voir la valeur qu'ils référencent changer. <br>Par exemple :</li>
         </ul>
         <pre><code data-trim data-noescape class="language-javascript">
@@ -883,7 +884,7 @@ Bien que `a` soit `const`, il est autorisé de modifier un élément du tableau,
             // On peut dire : "Ce vers quoi 'b' pointe n'a pas changé"
 
             b = [1, 2, 3]; // Erreur ! 
-            // Le tableau [1,2,3] de cette ligne est un nouveau tableau, différent de celui au dessus.
+            // Le tableau [1,2,3] de cette ligne est un nouveau tableau, différent de celui au-dessus.
             // Ici on change ce vers quoi "b" pointe, et c'est interdit car "b" est constant
 
         </code></pre>

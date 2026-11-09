@@ -1,0 +1,114 @@
+<section>
+	<br><br><br>
+	<h1>JavaScript</h1>
+	<h2>Scopes et closures</h2>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Scopes et closures</h4>
+	<p>En programmation les variables ont une <i>portée</i> (<i>scope</i> en anglais), c'est-à-dire le contexte dans lequel elles existent</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		let condition = true;
+		if(condition){
+			let maValeur = 5;
+			// Ici maValeur est accessible
+		}
+		console.log(maValeur); // Erreur : maValeur n'existe pas ici
+    </code></pre>
+	<p>JavaScript gère la mémoire automatiquement, les espaces mémoire nécessaires sont automatiquement réservés. Lorsqu'un espace mémoire n'est plus utilisé, JavaScript récupère cet espace.</p>
+	<p>Récupérer l'espace mémoire non utilisé est une tâche difficile, elle est gérée par une partie dédiée du moteur JavaScript : le <i>garbage collector</i>. C'est le cas de la plupart des langages de haut niveau, comme le Python.</p>
+	<aside class="notes">
+		Dans les langages dits de "bas niveau", la mémoire est souvent gérée manuellement. C'est le cas par exemple en C/C++. Dans ces cas il n'existe pas de garbage collector, et c'est à la personne qui programme de dire quand un espace mémoire doit être alloué ou désalloué. Cela permet une meilleure précision dans la gestion de la mémoire, mais est souvent la source de beaucoup d'erreurs.
+		Les garbage collectors permettent de ne plus se soucier de cet aspect. En contrepartie, la mémoire n'est pas directement récupérée, mais le garbage collector est exécuté à certains moments pour analyser l'utilisation actuelle de la mémoire et récupérer les zones de mémoire qui ne sont plus utilisées.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Scopes et closures</h4>
+	<p>Les fonctions JavaScript possèdent également une portée propre</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		function addFive(x){
+			const five = 5;
+			return x + five;
+		}
+
+		const result = addFive(4); // Ligne valide
+		const result2 = 4 + five;  // Erreur : five n'existe que dans la fonction
+    </code></pre>
+	<p>Toute déclaration dans une fonction n'existe que dans cette fonction</p>
+
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Scopes et closures</h4>
+	<p>Les variables déclarées en dehors de la fonction peuvent être utilisées à l'intérieur</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		let outsideVariable = 5;
+		
+		function add(x){
+			return x + outsideVariable;
+		}
+
+		console.log(add(4)); // 9
+		outsideVariable = 10;
+		console.log(add(4)); // 14
+    </code></pre>
+	<p>La fonction garde <i>une référence</i> vers son contexte. C'est-à-dire que changer une valeur utilisée dans la fonction aura un impact.</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Scopes et closures</h4>
+	<p>Que se passe-t-il dans ce cas ? (Exemple tiré de developer.mozilla.org)</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		function makeFunc() {
+			const name = "Mozilla";
+			function displayName() {
+				console.log(name);
+			}
+			return displayName;
+		}
+		const myFunc = makeFunc();
+		myFunc();	// Que fait cette ligne ?
+    </code></pre>
+	<ol>
+		<li>Affiche "Mozilla"</li>
+		<li>Retourne une erreur, "name" n'est pas défini</li>
+		<li>Affiche <i>undefined</i></li>
+	</ol>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Scopes et closures</h4>
+	<p>Que se passe-t-il dans ce cas ? (Exemple tiré de developer.mozilla.org)</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		function makeFunc() {
+			const name = "Mozilla";
+			function displayName() {
+				console.log(name);
+			}
+			return displayName;
+		}
+		const myFunc = makeFunc();
+		myFunc();	// Que fait cette ligne ?
+    </code></pre>
+	<p>Ce script affichera "Mozilla". En JavaScript, les fonctions retiennent tout leur contexte, même si ce contexte devient hors de portée.
+	Ici, bien que <code>name</code> soit déclaré dans la fonction, et que <code>name</code> soit hors de portée lors de l'appel à <code>myFunc()</code>, la fonction a tout de même conservé son contexte, et donc la valeur de <code>name</code></p>
+	<p>Les fonctions en JavaScript sont donc la combinaison de leurs instructions et de leur contexte. On dit alors que les fonctions forment des <i>fermetures</i> (<i>closures</i> en anglais).</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Scopes</h4>
+	<br>
+	<p>Site officiel : <br>
+		<a href="https://developer.mozilla.org/en-US/docs/Glossary/Scope">https://developer.mozilla.org/en-US/docs/Glossary/Scope</a><br>
+		<a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Closures">https://developer.mozilla.org/fr/docs/Web/JavaScript/Guide/Closures</a>
+	</p>
+</section>
+
+

@@ -1,0 +1,583 @@
+<section>
+	<br><br><br>
+	<h1>JavaScript</h1>
+	<h2>Asynchrone et promesses</h2>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exécution synchrone</h4>
+    <p>Considérons l'exemple suivant, qui décrit à grands traits le chargement d'une carte</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        init_map();         // Initialisation de la carte
+        load_map_tiles();   // Chargement des tuiles de la carte, sur un serveur distant par exemple
+        render_map();       // Rendu de la carte
+        /* ... suite du code */
+    </code></pre>
+    <p>
+        Par défaut, le JavaScript s'exécute de manière <i>synchrone</i> : ligne après ligne, chaque instruction doit être terminée avant que la suivante commence.
+        <br><br>
+        Dans ce code, la fonction <code>load_map_tiles()</code> va charger toutes les tuiles, faisant un grand nombre de requêtes. Cela peut prendre plusieurs secondes, pendant lesquelles la majorité du temps est passée à attendre le transfert de données.
+        <br>
+        Pendant ce temps, la page est complètement bloquée, elle a l'air de ne pas fonctionner correctement. La situation est encore pire s'il faut régulièrement charger de nouvelles tuiles.
+        <br><br>
+        Pourrait-on trouver une solution ?
+    </p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exécution synchrone</h4>
+    <p>JavaScript ne possède qu'<b>un seul fil d'exécution</b> (<i>thread</i>). Il ne fait qu'une seule chose à la fois.</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        function wait(){
+            for(let i=0; i &lt; 5_000_000_000; i++){} // Boucle de plusieurs secondes
+        }
+        wait();
+        console.log("Terminé !");
+    </code></pre>
+    <p>
+        Tant que du JavaScript s'exécute, la page est "gelée" : clics, défilement, saisie au clavier, rien ne réagit.
+        Cela est très désagréable pour la personne utilisant la page web.
+    </p>
+    <p class="fragment fade-in">
+        Or beaucoup d'opérations prennent du temps : télécharger des tuiles, interroger un serveur WMS/WFS, attendre un clic sur la carte...<br>
+        Comment attendre leur résultat sans bloquer la page ?
+    </p>
+    <aside class="notes">
+        Un <i>thread</i> désigne un fil d'exécution. JavaScript n'utilise qu'un seul thread (excepté si on utilise des Web Workers), cela signifie que JavaScript ne peut pas exécuter plusieurs instructions en même temps, même si l'ordinateur possède un processeur comportant plusieurs cœurs.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Exécution asynchrone</h4>
+    <p>
+        Une opération <i>asynchrone</i> est une opération dont l'exécution ne suit pas l'ordre des lignes de code.
+        Par exemple, la fonction <code>setTimeout</code> permet d'attendre un certain temps avant d'exécuter une fonction.
+    </p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        console.log("A");
+        setTimeout(() => console.log("B"), 1000); // Demande au navigateur d'exécuter
+                                                  // la fonction dans 1 seconde
+        console.log("C");
+        // Affiche : A, C, puis B une seconde plus tard
+    </code></pre>
+    <p>Exemples d'opérations asynchrones : </p>
+    <ul>
+        <li><code>setTimeout</code>, qui indique d'attendre un certain temps</li>
+        <li><code>fetch</code>, qui récupère une ressource distante (images ou fichiers JSON par exemple, en indiquant une URL)</li>
+        <li>Les événements du navigateur, "au clic", "au chargement de la page", etc.</li>
+    </ul>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Asynchrone n'est pas parallèle</h4>
+    <br>
+    <p>
+        <b>Asynchrone</b> : plusieurs logiques à exécuter, qui passent de l'une à l'autre pendant les temps d'attente (réseau, minuteur, utilisateur).
+    </p>
+    <p>
+        <b>Parallèle</b> : plusieurs calculs exécutés réellement en même temps, sur plusieurs cœurs du processeur.
+    </p>
+    <br>
+    <p class="warning">
+        Votre code JavaScript ne s'exécute jamais en parallèle. L'asynchrone permet d'<i>attendre</i> sans bloquer, mais un calcul long bloquera toujours la page.
+    </p>
+    <aside class="notes">
+        L'asynchrone sert la réactivité, le parallélisme sert la performance.<br>
+        Pour exécuter réellement un calcul lourd en parallèle dans un navigateur, il faut utiliser des <i>Web Workers</i>, qui sortent du cadre de ce cours.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Le problème du résultat</h4>
+    <p>Comment récupérer le résultat d'une opération asynchrone ?</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        let result;
+        setTimeout(() => {
+            result = 5;
+            console.log("Log2 : ", result);
+        }, 1000);
+        console.log("Log1 : ", result);
+        // Reste du code
+    </code></pre>
+    <p class="fragment fade-in">
+        Ce code définit un <i>timeout</i> via <code>setTimeout</code>. La deuxième ligne s'exécute presque instantanément, et démarre l'exécution asynchrone de son contenu, dans 1 seconde. <br>
+        L'affichage du Log1 s'effectue dans la foulée, <code>result</code> n'est pas encore défini, et il s'affiche <code>Log1 : undefined</code>
+        <br>
+        Une seconde plus tard, JavaScript exécute le timeout, définit la valeur de <code>result</code>, et affiche <code>Log2 : 5</code>
+        <br><br>
+        Conclusion : <b>Quand une valeur est assignée de manière asynchrone, ne pas l'utiliser en dehors.</b> Sinon cela provoque des comportements inattendus.
+    </p>
+    <aside class="notes">
+        Le code qui a besoin du résultat doit donc être exécuté <i>après</i> que le résultat soit disponible. Toute la suite du chapitre présente des manières de le faire : les callbacks, les promesses, puis async / await.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les callbacks</h4>
+    <p>Première solution : donner à l'opération asynchrone une fonction à appeler quand le résultat est prêt. On appelle cette fonction un <i>callback</i>.</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        // Fonction fictive : télécharge les tuiles, puis appelle callback(tiles)
+        load_map_tiles(url, tiles => {
+            console.log("Tuiles chargées : ", tiles); // Exécuté plus tard
+        });
+        console.log("La carte est interactive");      // Exécuté immédiatement
+    </code></pre>
+    <p>
+        C'est le principe des événements, qui sont utilisés dans de nombreuses librairies, y compris en webmapping
+    </p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        map.on('click', event => console.log(event.coordinate)); // Callback appelé à chaque clic
+    </code></pre>
+    <p>
+        Ici on définit un <i>callback</i> qui sera appelé au clic sur la carte.
+    </p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les callbacks</h4>
+    <p>Problème : comme le résultat d'un callback ne peut être utilisé que dans celui-ci (le résultat d'une exécution asynchrone ne peut pas être utilisé en dehors), on se retrouve avec ce type de code...</p>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        load_capabilities(url, (capabilities, error) => {
+            if(error){ console.error(error); return; }
+            load_layer(capabilities.layers[0], (layer, error) => {
+                if(error){ console.error(error); return; }
+                load_map_tiles(layer, (tiles, error) => {
+                    if(error){ console.error(error); return; }
+                    process_map_tiles(tiles, (result, error) => {
+                        if(error){ console.error(error); return; }
+                        display_map(result);
+                    });
+                });
+            });
+        });
+    </code></pre>
+    <p>C'est très difficile à lire et à modifier. On appelle cela le <i>callback hell</i></p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Le callback hell</h4>
+    <br>
+    <p>Ce style de code pose plusieurs problèmes :</p>
+    <ul>
+        <li>Chaque étape ajoute un niveau d'indentation, le code devient difficile à lire</li>
+        <li>La gestion des erreurs doit être répétée à chaque étape</li>
+        <li>Ajouter, retirer ou réordonner une étape demande de modifier toute la structure</li>
+        <li>Chaque librairie choisit sa propre convention (ordre des paramètres, gestion des erreurs, etc.)</li>
+    </ul>
+    <br>
+    <p>On aimerait pouvoir écrire ces étapes <i>les unes à la suite des autres</i></p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les promesses</h4>
+    <p>Une <i>promesse</i> (<code>Promise</code>) est un objet qui représente le résultat futur d'une opération asynchrone.</p>
+    <p>Au lieu d'utiliser un callback, une fonction retourne immédiatement une promesse, qui est un objet "contenant" le futur résultat de l'opération. <br><br>
+        Une promesse est toujours dans l'un de ces trois états :</p>
+    <ul>
+        <li><i>pending</i> (en attente) : l'opération n'est pas terminée</li>
+        <li><i>fulfilled</i> (tenue) : l'opération a réussi, la promesse contient une valeur</li>
+        <li><i>rejected</i> (rompue) : l'opération a échoué, la promesse contient une erreur</li>
+    </ul>
+    <p>Une promesse ne change d'état qu'une seule fois. Une fois tenue ou rompue, elle est dite <i>résolue</i> (<i>settled</i>).</p>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les promesses</h4>
+    <p>Une promesse possède une méthode <code>then</code> qui enregistre une fonction à exécuter lorsque la promesse sera tenue :</p>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        const p1 = load_capabilities(url);
+        const p2 = p1.then(capabilities => load_layer(capabilities.layers[0]))
+        const p3 = p2.then(layer => load_map_tiles(layer))
+        const p4 = p3.then(tiles => process_map_tiles(tiles))
+        const p5 = p4.then(result => display_map(result))
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les promesses</h4>
+    <p>On peut chaîner ces appels, pour obtenir un code beaucoup plus clair</p>
+    <p>Une promesse possède également une méthode <code>catch</code> qui enregistre une fonction à exécuter en cas d'erreur.</p>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        load_capabilities(url)
+            .then(capabilities => load_layer(capabilities.layers[0]))
+            .then(layer => load_map_tiles(layer))
+            .then(tiles => process_map_tiles(tiles))
+            .then(result => display_map(result))
+            .catch(error => console.error(error)); // Une seule gestion des erreurs
+    </code></pre>
+    <p>
+        Le même code que le callback hell, mais à plat : les étapes se lisent dans l'ordre.<br>
+        <code>then</code> retourne lui-même une nouvelle promesse, ce qui permet d'enchaîner les appels.
+        Si la fonction passée à <code>then</code> retourne une promesse, l'étape suivante attend sa résolution.
+    </p>
+    <aside class="notes">
+        Une erreur levée (<code>throw</code>) dans n'importe quelle étape, ou une promesse rompue, saute toutes les étapes suivantes jusqu'au prochain <code>catch</code>. C'est l'équivalent asynchrone du bloc <code>try ... catch</code>.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Les promesses</h4>
+    <p>
+        Les fonctions de l'API de base en JavaScript qui prennent du temps retournent des promesses.
+        C'est le cas de <code>fetch</code>, qui télécharge une ressource
+    </p>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        const url = "https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swisssurface3d"
+        fetch(url)                                     // Promesse de la réponse du serveur
+            .then(response => {
+                if(!response.ok){
+                    throw new Error("Erreur HTTP " + response.status);
+                }
+                return response.json();                // Seconde promesse, qui lit le JSON
+            })
+            .then(data => console.log(data))           // Quand le JSON est lu, on l'affiche
+            .catch(error => console.error(error));     // Erreur réseau, HTTP ou JSON
+
+        // Le code se trouvant ici ne sera pas bloqué par les requêtes au-dessus
+    </code></pre>
+    <aside class="notes">
+        <code>fetch</code> ne rejette la promesse qu'en cas d'erreur réseau. Une réponse 404 ou 500 est considérée comme une réponse valide, d'où la vérification de <code>response.ok</code>.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Créer une promesse</h4>
+    <p>Le constructeur <code>Promise</code> prend une fonction qui reçoit deux paramètres : </p>
+        <ul>
+            <li><code>resolve</code>, la fonction à appeler quand la promesse est tenue, avec le résultat</li>
+            <li><code>reject</code>, facultatif, la fonction à appeler si la promesse échoue, avec l'erreur</li>
+        </ul>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        // Ici on enrobe setTimeout dans une promesse
+        function wait(ms){
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        wait(1000).then(() => console.log("Une seconde plus tard"));
+
+        // Transformer une fonction à callback en fonction retournant une promesse
+        function load_map_tiles_promise(url){
+            return new Promise((resolve, reject) => {
+                load_map_tiles(url, (tiles, error) => error ? reject(error) : resolve(tiles));
+            });
+        }
+    </code></pre>
+    <aside class="notes">
+        Si une fonction retourne déjà une promesse (comme <code>fetch</code>), il ne faut pas l'envelopper dans un <code>new Promise</code>. Il suffit de retourner la promesse existante, ou la chaîne de <code>then</code>.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Créer une promesse</h4>
+    <p>Attention, les promesses ne sont pas magiques</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        console.log("1. Avant la promesse");
+        new Promise(resolve => {              // Cette fonction s'exécute immédiatement,
+            console.log("2. Début du calcul"); // de manière synchrone !
+            for(let i=0; i &lt; 3_000_000_000; i++){} // Boucle de plusieurs secondes
+            console.log("3. Fin du calcul");
+            resolve();
+        }).then(() => console.log("5. Callback du then"));
+        console.log("4. Après la promesse");
+    </code></pre>
+    <p>
+        La fonction passée au constructeur <code>Promise</code> est exécutée <b>immédiatement</b>, pendant le <code>new Promise(...)</code>. <br>
+        Ici, "4. Après la promesse" ne s'affiche qu'après la fin de la boucle, et la page reste gelée pendant ce temps, exactement comme sans promesse.
+        Seul le callback du <code>then</code> est exécuté plus tard.
+    </p>
+    <p class="warning">Une promesse ne rend pas un code parallèle. Elle permet seulement de manipuler un résultat qui arrivera plus tard.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- Ordre d'exécution                                            -->
+<!-- ============================================================ -->
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'ordre d'exécution</h4>
+    <p>Comment JavaScript décide-t-il quand exécuter un élément asynchrone ? Grâce à la <i>boucle d'événements</i> (<i>event loop</i>)</p>
+    <ol>
+        <li>Le code en cours (script principal, ou callback) s'exécute <b>jusqu'au bout</b>, sans jamais être interrompu</li>
+        <li>Quand JavaScript exécute une ligne avec comportement asynchrone :
+            <ul>
+                <li>Le navigateur prépare l'opération (attendre un certain temps, envoyer une requête, etc.)</li>
+                <li>Quand l'opération est prête (le temps est écoulé, la requête a obtenu une réponse, etc.), il place le code à exécuter dans la <b>file d'attente</b></li>
+            </ul>
+        </li>
+        <li>Quand le code en cours est terminé, la boucle d'événements prend le <b>prochain</b> code de la file d'attente, l'exécute jusqu'au bout, puis recommence</li>
+    </ol>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Quand l'exécution s'arrête-t-elle ?</h4>
+    <pre><code data-trim data-noescape class="language-javascript">
+        document.addEventListener("click", () => console.log("Clic !"));
+        console.log("Début");
+        for(let i=0; i &lt; 3_000_000_000; i++){} // Cliquez pendant la boucle...
+        console.log("Fin");
+        // Affiche : Début, Fin, puis Clic !
+    </code></pre>
+    <p>
+        JavaScript n'interrompt <b>jamais</b> un code en cours. Le clic a lieu pendant la boucle, mais son callback attend dans la file que le script soit terminé.
+    </p>
+    <p>"Jusqu'au bout" signifie jusqu'à ce que la pile d'appels soit vide : la dernière ligne du script ou du callback, y compris toutes les fonctions qu'il appelle. Un autre code ne peut commencer qu'à la fin du code en cours.</p>
+    <aside class="notes">
+        Il n'y a donc jamais deux morceaux de code JavaScript qui s'exécutent "en même temps", et aucun ne peut être coupé au milieu. C'est ce qui rend l'asynchrone en JavaScript relativement simple : entre deux lignes d'un même callback, aucune variable ne peut être modifiée par un autre code.<br>
+        La contrepartie : un callback trop long bloque tous les autres, et la page entière.
+    </aside>
+</section>
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'ordre d'exécution</h4>
+    <p>Qu'affiche ce code ?</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        console.log("1");
+        setTimeout(() => console.log("2"), 0);
+        Promise.resolve().then(() => console.log("3"));
+        new Promise(resolve => {
+            console.log("4");
+            resolve();
+        }).then(() => console.log("5"));
+        console.log("6");
+    </code></pre>
+    <div class="fragment fade-in">
+        <p>Ce code affichera : <code>1  4  6  3  5  2</code></p>
+        <ul>
+            <li><code>1</code>, <code>4</code>, <code>6</code> : code synchrone, exécuté jusqu'au bout (la fonction de <code>new Promise</code> en fait partie)</li>
+            <li><code>3</code>, <code>5</code> : callbacks de promesses, exécutés dès que le code principal est terminé</li>
+            <li><code>2</code> : callback du minuteur, exécuté en dernier même avec un délai de 0, car les callbacks des promesses sont prioritaires</li>
+        </ul>
+    </div>
+    <aside class="notes">
+        <code>Promise.resolve()</code> crée une promesse déjà tenue. Son <code>then</code> n'est pourtant pas exécuté immédiatement : un callback de promesse est <i>toujours</i> placé dans la file d'attente, jamais exécuté de manière synchrone.<br>
+        <code>setTimeout(f, 0)</code> ne signifie pas "maintenant", mais "dès que possible, dans au moins 0 ms".
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>L'ordre d'exécution</h4>
+    <p>Conséquence : ne jamais attendre un résultat avec une boucle</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        let result;
+        fetch('https://data.geo.admin.ch/api/stac/v0.9/').then(response => { result = response; });
+        while(result == undefined){} // Boucle infinie !
+        console.log(result);
+    </code></pre>
+    <p>
+        Le callback du <code>then</code> ne peut s'exécuter que lorsque la pile d'appels est vide.
+        Or la boucle <code>while</code> ne se termine jamais, donc la pile n'est jamais vide, donc <code>result</code> n'est jamais assigné.<br>
+        La page est gelée pour toujours.
+    </p>
+    <p class="advice">Le code qui dépend d'un résultat asynchrone doit se trouver <i>dans</i> le <code>then</code> (ou après un <code>await</code>), jamais après une attente active.</p>
+</section>
+
+<!-- ============================================================ -->
+<!-- async / await                                                -->
+<!-- ============================================================ -->
+
+
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>async / await</h4>
+    <p>Les chaînes de <code>then</code> restent moins lisibles que du code synchrone. Il existe une syntaxe plus simple</p>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        async function show_map(url){
+            try {
+                const capabilities = await load_capabilities(url);
+                const layer = await load_layer(capabilities.layers[0]);
+                const tiles = await load_map_tiles(layer);
+                const result = await process_map_tiles(tiles);
+                display_map(result);
+            } catch(error) {
+                console.error(error);
+            }
+        }
+    </code></pre>
+    <p>Le mot-clé <code>async</code> se place devant une fonction et lui fait retourner une promesse.</p>
+    <p>Le mot-clé <code>await</code> indique que le reste de la fonction s'exécutera après la résolution de la promesse qu'il précède</p>
+    <aside class="notes">
+        Le code se lit comme du code synchrone, et les erreurs se gèrent avec un <code>try ... catch</code> classique : une promesse rompue devient une exception levée par le <code>await</code>.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>async / await</h4>
+    <p>Comparaison sur un exemple réel : récupérer le titre d'un jeu de données</p>
+    <table>
+        <tr>
+            <td>
+                <pre><code data-trim data-noescape class="language-javascript">
+                    function get_data_title(url){
+                        return fetch(url)
+                            .then(response => response.json())
+                            .then(data => data['title']);
+                    }
+                </code></pre>
+            </td>
+            <td>
+                <pre><code data-trim data-noescape class="language-javascript">
+                    async function get_data_title(url){
+                        const response = await fetch(url);
+                        const data = await response.json();
+                        return data['title'];
+                    }
+                </code></pre>
+            </td>
+        </tr>
+    </table>
+    <p>Ces deux fonctions sont équivalentes, et s'utilisent de la même manière</p>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        const url = "https://data.geo.admin.ch/api/stac/v0.9/collections/ch.swisstopo.swisssurface3d"
+        get_data_title(url).then(title => console.log("Titre : " + title))
+        // Affichera "Titre : swissSURFACE3D Raster, the digital surface model of Switzerland"
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>async / await, un sucre syntaxique</h4>
+    <p><code>async</code> / <code>await</code> n'apporte rien de nouveau : c'est une autre écriture des promesses (un <i>sucre syntaxique</i>)</p>
+    <table>
+        <tr>
+            <td>
+                <pre><code data-trim data-noescape class="language-javascript">
+                    async function f(){
+                        console.log("A");
+                        const x = await g();
+                        console.log(x);
+                        return x * 2;
+                    }
+                </code></pre>
+            </td>
+            <td>
+                <pre><code data-trim data-noescape class="language-javascript">
+                    function f(){
+                        console.log("A");
+                        return g().then(x => {
+                            console.log(x);
+                            return x * 2;
+                        });
+                    }
+                </code></pre>
+            </td>
+        </tr>
+    </table>
+    <ul>
+        <li>Le code avant le premier <code>await</code> s'exécute immédiatement, de manière synchrone</li>
+        <li><code>await</code> place le reste de la fonction dans le <code>.then</code> de la promesse qu'il précède</li>
+        <li>Une fonction <code>async</code> retourne toujours une promesse : <code>return</code> la tient, <code>throw</code> la rompt</li>
+    </ul>
+    <aside class="notes">
+        La fonction est "mise en pause" au niveau du <code>await</code>, mais pas la page : la fonction retourne immédiatement sa promesse à l'appelant, qui continue son exécution. Par exemple :
+        <pre>
+async function f(){ console.log("A"); await null; console.log("B"); }
+f();
+console.log("C");
+// Affiche A, C, B
+        </pre>
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Pourquoi <code>await</code> exige <code>async</code></h4>
+    <p>Imaginons qu'<code>await</code> soit autorisé dans une fonction normale</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        function get_data_title(url){             // Pas async : erreur de syntaxe
+            const response = await fetch(url);
+            const data = await response.json();
+            return data['title'];
+        }
+        const title = get_data_title(url);        // Que vaut title ?
+    </code></pre>
+    <p>
+        Une fonction normale doit retourner sa valeur <b>immédiatement</b>, à la fin de son exécution synchrone. Mais le titre n'arrivera que plus tard. Il n'y a que deux possibilités :
+    </p>
+    <ul>
+        <li>Bloquer jusqu'à l'arrivée du résultat : c'est la boucle infinie vue précédemment, la page serait gelée</li>
+        <li>Retourner immédiatement une promesse du résultat : c'est exactement ce que fait une fonction <code>async</code></li>
+    </ul>
+    <aside class="notes">
+        Le mot-clé <code>async</code> n'est donc pas un détail : il indique, à JavaScript comme à la personne qui lit le code, que la fonction retourne une promesse et non directement son résultat.<br>
+        Exception : dans un module, <code>await</code> est autorisé au niveau supérieur du fichier (<i>top-level await</i>). Le module lui-même est alors traité comme asynchrone.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Pourquoi <code>await</code> exige <code>async</code></h4>
+    <p>Conséquence : l'asynchrone "remonte" jusqu'aux appelants</p>
+    <pre><code data-trim data-noescape class="language-javascript">
+        const title = get_data_title(url);       // Erreur fréquente : oubli du await
+        console.log(title);                      // Affiche "Promise { &lt;pending&gt; }"
+
+        async function display_title(){
+            const title = await get_data_title(url); // Correct
+            console.log(title);
+        }
+    </code></pre>
+    <p>
+        Une fonction qui utilise <code>await</code> devient asynchrone, et ses appelants reçoivent une promesse.
+        Ils doivent à leur tour utiliser <code>await</code> (et donc être <code>async</code>) ou <code>then</code>.
+    </p>
+    <p class="warning">Un résultat asynchrone ne peut jamais redevenir synchrone. On ne peut que placer le code qui en dépend <i>après</i> son arrivée.</p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>async / await</h4>
+    <p>Attention à ne pas attendre inutilement : des <code>await</code> successifs s'exécutent les uns après les autres</p>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        // Lent : la seconde requête ne démarre qu'à la fin de la première
+        const buildings = await (await fetch(url_buildings)).json();
+        const roads = await (await fetch(url_roads)).json();
+    </code></pre>
+    <pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+        // Rapide : les deux requêtes sont lancées en même temps
+        const [buildings, roads] = await Promise.all([
+            fetch(url_buildings).then(response => response.json()),
+            fetch(url_roads).then(response => response.json())
+        ]);
+    </code></pre>
+    <p><code>Promise.all</code> prend un tableau de promesses et retourne une promesse tenue quand <b>toutes</b> sont tenues (ou rompue dès que l'une d'elles est rompue)</p>
+    <aside class="notes">
+        Ce n'est pas du parallélisme de calcul : ce sont les <i>attentes</i> réseau qui se chevauchent. C'est particulièrement utile pour charger plusieurs couches indépendantes d'une carte.
+    </aside>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Asynchrone - Références</h4>
+	<br>
+	<p>Site officiel : <br>
+        <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Promise">https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Promise</a><br>
+        <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/async_function">https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/async_function</a><br>
+        <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Execution_model</a>
+    </p>
+    <br>
+	<p>W3Schools: <br>
+        <a href="https://www.w3schools.com/js/js_async.asp">https://www.w3schools.com/js/js_async.asp</a><br>
+        <a href="https://www.w3schools.com/js/js_async_callbacks.asp">https://www.w3schools.com/js/js_async_callbacks.asp</a><br>
+        <a href="https://www.w3schools.com/js/js_async_promises.asp">https://www.w3schools.com/js/js_async_promises.asp</a>
+    </p>
+</section>

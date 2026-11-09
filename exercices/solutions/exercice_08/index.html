@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Exercice 08</title>
+        <meta charset="UTF-8">
+        <style>
+            html{
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            li{
+                margin:10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Exercice 08</h1>
+        <p>
+            Un <a href="https://stacspec.org/en/">catalogue STAC</a> est une manière d'organiser et de diffuser des métadonnées relatives à des données géographiques.
+            <br><br>
+            De manière simplifiée, un catalogue STAC est composé d'un ensemble de fichiers JSON, organisés en hiérarchie, qui permettent de naviguer dans un ensemble de métadonnées.
+            <br><br>
+            Voici quelques exemples de catalogues STAC : 
+            <ul>
+                <li>Swisstopo : <a href="https://data.geo.admin.ch/browser/index.html">https://data.geo.admin.ch/browser/index.html</a></li>
+                <li>Canton de Lucerne : <a href="https://daten.geo.lu.ch/browser#/">https://daten.geo.lu.ch/browser#/</a></li>
+                <li>Canton de Neuchâtel : <a href="https://sitn.ne.ch/web/stac">https://sitn.ne.ch/web/stac</a></li>
+            </ul>
+            Ces interface sont simplement une visualisation des fichiers JSON qui composent le catalogue. Il est possible de consulter directement les fichiers JSON : 
+            <ul>
+                <li>Pour Swisstopo : <a href="https://data.geo.admin.ch/api/stac/v0.9/">https://data.geo.admin.ch/api/stac/v0.9/</a></li>
+                <li>Pour Lucerne : <a href="https://daten.geo.lu.ch/api/stac/v1.0/">https://daten.geo.lu.ch/api/stac/v1.0/</a></li>
+                <li>Pour Neuchâtel : <a href="https://sitn.ne.ch/services/stac/catalog.json">https://sitn.ne.ch/services/stac/catalog.json</a></li>
+            </ul>
+        </p>
+        <br>
+        Les catalogues STAC sont composés (entre autres) de deux types d'objets : 
+        <ol>
+            <li>
+                Les <i>collections</i>, qui décrivent un ensemble d'éléments géographiques. <br>
+                Une collection ressemble à ceci (certains propriétés sont omises pour simplifier) :
+                <pre><code>{
+    "type": "Catalog",
+    "title": "Titre de la collection"
+    "description": "Contenu de la description",
+    "links": [
+        {
+            "rel": "root",
+            "href": "https://sitn.ne.ch/services/stac/catalog.json",
+            "type": "application/json",
+            "title": "Catalogue STAC du SITN"
+        },
+        {
+            "rel": "child",
+            "href": "https://url/vers/une/collection/enfant.json",
+            "type": "application/json",
+            "title": "Titre de la sous-collection"
+        },
+        {
+            "rel": "item",
+            "href": "https://url/vers/un/item.json",
+            "type": "application/geo+json"
+        },
+
+        {
+            "rel": "collections",
+            "href": "https://url/vers/toutes/les/collections/du/catalogue.json",
+            "type": "application/json"
+        },
+        {
+            "rel": "self",
+            "href": "https://url/vers/la/page/actuelle.json",
+            "type": "application/json"
+        }
+    ],
+}
+                </code></pre>
+            Une collection contient un titre, une description, et un ensemble de liens parmi lesquels les liens de type "child" sont les collections enfant. Les liens de type "item" sont les liens vers les items de la collection. Il peut y avoir plusieurs collections enfants et plusieurs items par collection. Il existe d'autres types de liens que des "child" et "item", comme "root" qui indique la racine du catalogue.
+            </li>
+            <li>
+                Les <i>items</i>, qui décrivent un élément géographique. <br>
+                Un item ressemble à ceci (certaines propriétés sont omises pour simplifier): 
+                <pre><code>{
+  "type": "Feature",
+  "id": "identifiant_de_item",
+  "geometry": { /* type de géométrie, ne nous intéresse pas pour cet exercice */ },
+  "links": [ /* ensemble de liens, ne nous intéresse pas pour cet exercice */ ],
+  "assets": { /* fichiers composants l'item. ne nous intéresse pas pour cet exercice */ },
+}
+                </code></pre>
+            </li>
+        </ol>
+        <br>
+        L'objectif de cet exercice est d'écrire une interface web capable de récupérer et d'afficher certaines parties d'un catalogue STAC.
+        <br>
+        L'interface ci-dessous permet d'indiquer l'URL d'une collection. Au clic sur le bouton, l'application doit 
+        <ol>
+            <li>Charger la collection indiquée, puis afficher son titre et sa description dans la section "Titre et description"</li>
+            <li>Lister dans la section "Sous-Collections" toutes les collection enfant de la collection indiquée</li>
+            <li>Pour chaque item indiqué dans les liens de la collection, l'application récupère l'item et affiche son id dans une liste</li>
+            <li>Lors du chargement des items, l'application modifie le titre de la section pour indiquer la progression du chargement, par exemple "Items (10/35)"</li>
+            <li>Le bouton reset efface le contenu des sections</li>
+            <li>Le chargement des items doit se faire de manière asynchrone</li>
+        </ol>
+
+        <br>
+        Voici quelques exemples pour tester :
+
+        <ul>
+            <li>Collection "Lidar 2022" de Neuchâtel, contient 11 sous-collections: https://sitn.ne.ch/services/stac/ne/lidar2022/collection.json</li>
+            <li>Modèles de surface 2022 de Neuchâtel, contient 3 items : https://sitn.ne.ch/services/stac/ne/lidar2022/lidar2022mns/collection.json</li>
+            <li>Lise des tuiles LiDAR 2022 de Neuchâtel, contient 3218 items : https://sitn.ne.ch/services/stac/ne/lidar2022/pointcloud/collection.json</li>
+        </ul>
+
+
+        <hr>
+
+        <h2>Catalogue STAC Browser</h2>
+        <input type="text" id="stac-url" size="60" placeholder="STAC URL">
+        <button id="load-btn">Charger</button>
+        <button id="reset-btn">Reset</button>
+        <hr>
+        <h3>Titre et description</h3>
+        <div id="collection-info" class="section"></div>
+        <h3 id="childCollection-title">Sous-Collections</h3>
+        <div id="childCollection-info" class="section"></div>
+        <h3 id="items-title">Items</h3>
+        <div id="items-info" class="section"></div>
+        <script src="main.js" type="module"></script>
+    </body>
+</html>

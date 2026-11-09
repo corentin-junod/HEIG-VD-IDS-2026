@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Exercice 06</title>
+        <meta charset="UTF-8">
+        <style>
+            li{
+                margin:10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Exercice 06</h1>
+        <div style="border:1px solid red;border-radius: 5px;padding:10px;">
+            Note : Cet exercice utilise les modules JavaScript. Pour que ceux-ci fonctionnent en local sur votre ordinateur, il vous faut un serveur web local.
+            Vous pouvez démarrer un serveur web local en ouvrant un terminal et en vous plaçant dans le dossier des exercices, puis en tapant la commande :
+            <code>python3 -m http.server</code> ou <code>python -m http.server</code>.<br>
+            Dans votre navigateur, allez ensuite à la page <code>127.0.0.1:8000</code>
+        </div>
+
+        <p>Cet exercice se veut un peu plus libre que les autres. Si vous ne savez pas comment faire quelque chose, n'hésitez pas à chercher sur internet.</p>
+        <br>
+
+        <p>L'objectif est de créer plusieurs sliders interactifs, dont la valeur affichée sous forme de texte se met à jour automatiquement.</p>
+        <br>
+
+        <p>Dans cet exercice, créez les classes suivantes, chacune dans son module : </p>
+        <ul>
+            <li>BaseSlider
+                <ul>
+                    <li>Cette classe crée un slider sur la page avec un texte indiquant sa valeur</li>
+                    <li>Le constructeur prend les arguments suivants
+                        <ul>
+                            <li>parent : l'élément HTML parent, dans lequel placer le slider</li>
+                            <li>label : le texte accompagnant le slider</li>
+                            <li>min : la valeur minimale du slier</li>
+                            <li>max : la valeur maximale du slider</li>
+                        </ul>
+                    </li>
+                    <li>Le slider sera composé de : 
+                        <ul>
+                            <li>Un élément <a href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/div">div</a> qui servira de conteneur</li>
+                            <li>Un élément <a href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/span">span</a> pour le label</li>
+                            <li>Un élément <a href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/span">span</a> pour afficher la valeur du slider</li>
+                            <li>Un élément <a href="https://developer.mozilla.org/fr/docs/Web/HTML/Reference/Elements/input">input</a> de type "range" pour faire le sélecteur de valeur.<br>
+                                Il est possible de définir la propriété "type", le minimum, le maximum et la valeur d'un input via ses attributs :
+                                <ul>
+                                    <li>"type" pour le type</li>
+                                    <li>"min" pour le minimum</li>
+                                    <li>"max" pour le maximum</li>
+                                    <li>"value" pour la valeur actuelle</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>Voir les fonctions suivantes pour interagir avec les éléments d'une page web en JavaScript: 
+                        <ul><a href="https://developer.mozilla.org/fr/docs/Web/API/Document/createElement">document.createElement</a> pour créer un élément HTML</ul>
+                        <ul><a href="https://developer.mozilla.org/fr/docs/Web/API/Element/append">element.append</a> pour ajouter un élément à un autre</ul>
+                        <ul><a href="https://www.w3schools.com/jsref/met_element_addeventlistener.asp">element.addEventListener</a> pour ajouter un événement à un élément HTML. L'événement du type "input" permet d'appeler une fonction à chaque changement de valeur d'un input</ul>
+                        <ul><a href="https://developer.mozilla.org/fr/docs/Web/API/Node/textContent">element.textContent</a> pour définir le contenu textuel d'un élément</ul>
+                    </li>
+                </ul>
+            </li>
+            <li>PercentageSlider, qui sera un BaseSlider allant toujours de 0 à 100, et dont le label affichera sa valeur en pourcent. Par exemple "53 %"</li>
+            <li>ExponentialSlider, qui sera un BaseSlider prenant un paramètre supplémentaire, nommé "exponent", et qui affichera dans son label la valeur du slider élevé à la puissance de l'exposant.</li>
+            <li>ColorSelector, qui sera un ensemble de 3 BaseSlider, respectivement pour le rouge, le vert et le bleu d'une couleur RGB. <br> Sa méthode "setOnChange" prend en paramètre une fonction qui sera appelée à chaque fois que la couleur indiquée par ses sliders change. <br> Son utilisation est montrée dans le fichier main.js. La couleur est renvoyée sous la forme "rgb(20,30,40)"</li>
+        </ul>
+
+        <script src="main.js" type="module"></script>
+        
+        <h2>Slider statique en HTML comme exemple : </h2>
+        <p>Ce slider ne met pas sa valeur à jour, l'objectif est de créer un élément qui ressemble à ceci, mais dont la valeur, ici 0, se met à jour automatiquement</p>
+        <div>
+            <span>Label du slider</span>
+            <input type="range" min="0" max="100">
+            <span>0</span>
+        </div>
+        <br><br>
+
+        <h2>Résultat de l'exercice :</h2>
+        <div id="content"></div>
+        <div id="color" style="width:100px;height:100px;"></div>
+    </body>
+</html>

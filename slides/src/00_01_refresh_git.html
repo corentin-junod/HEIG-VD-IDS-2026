@@ -1,7 +1,7 @@
 <section>
 	<br><br><br>
 	<h1>git</h1>
-	<h2>Logiciel de versionning</h2>
+	<h2>Logiciel de versioning</h2>
 	<br><br>
 	<img src="assets/git.svg" style="margin:auto;display:flex;">
 </section>
@@ -21,8 +21,8 @@
 	<p>Git est un logiciel open source, disponible sur tous les systèmes</p>
 	<aside class="notes">
     	Git est un incontournable du développement logiciel. C'est un programme open source utilisé partout dans le monde.
-		Il existe plusieurs alternatives à git (Perforce, Mercurial, etc) mais git est le plus utilisé, particulièrement dans le monde open-source.
-		Git gère tous les types de données textuelles, pas seulement du code. Des livres, des documentations, des configurations, des notes, etc peuvent très bien être des projets gérés par git. 
+		Il existe plusieurs alternatives à git (Perforce, Mercurial, etc.), mais git est le plus utilisé, particulièrement dans le monde open-source.
+		Git gère tous les types de données textuelles, pas seulement du code. Des livres, des documentations, des configurations, des notes, etc. peuvent très bien être des projets gérés par git. 
 		Par exemple, ces slides utilisent git et sont stockées sur GitHub.
 		En revanche git n'est pas fait pour gérer des fichiers compressés ou binaires, car ces derniers changent beaucoup d'une version à une autre.
 	</aside>
@@ -43,7 +43,7 @@
 	<br>
 	<p>Par exemple la liste des derniers commits de QGIS : <a href="https://github.com/qgis/QGIS/commits/master/">https://github.com/qgis/QGIS/commits/master/</a></p>
 	<aside class="notes">
-    	Quand un commit est enregistré, git attribue un identifiant unique au commit et enregistre sa différence par rapport au commit précédent.
+    	Quand un commit est enregistré, git attribue un identifiant unique au commit et enregistre un instantané du code.
 		Tout est placé de manière transparente dans le dossier .git de votre projet, qui est un dossier caché.
 		<br>
 		On ne modifie jamais le contenu du dossier .git manuellement. Tout se fait via des commandes dans le terminal.
@@ -65,7 +65,7 @@
 	</code></pre>
 
 	<p>
-		Git créé alors un nouveau commit
+		Git crée alors un nouveau commit
 		<ul>
 			<li>L'option -a indique de prendre tous les fichiers trackés modifiés</li>
 			<li>L'option -m indique le message du commit. Il s'agit d'un texte décrivant ce qui a été modifié dans ce
@@ -76,8 +76,8 @@
 	<aside class="notes">
 		Par défaut, git n'enregistre pas l'ensemble des fichiers. Il faut lui indiquer quels fichiers sont importants avec la commande git add
 La commande git status permet de voir l’état actuel d’un projet. Elle indiquera les fichiers modifiés depuis le dernier commit, et s’ils sont trackés ou non.
-Les messages de commit doivent être courts et le plus descriptif possible.
-Mauvaise exemple : "J’ai modifié plusieurs fichiers de la configuration globale pour la prochaine mise à jour, et corrigé plusieurs bug divers mais pas très importants" (C’est long et très peu précis)
+Les messages de commit doivent être courts et le plus descriptifs possible.
+Mauvais exemple : "J’ai modifié plusieurs fichiers de la configuration globale pour la prochaine mise à jour, et corrigé plusieurs bugs divers mais pas très importants" (C’est long et très peu précis)
 Bon exemple : "Ajoute la couche bâtiments de OpenStreetMap" (Court et précis)
 Il est également possible de ne commit que certains fichiers modifiés, quand on ne précise pas l’option -a, mais ceci sort du cadre de ce cours.
 	</aside>
@@ -125,12 +125,12 @@ Il est également possible de ne commit que certains fichiers modifiés, quand o
 	<ul>
 		<li><code>git clone</code> : récupère le code depuis un dépôt distant</li>
 		<li><code>git add &lt;file&gt;</code> : ajoute un fichier au prochain commit</li>
-		<li><code>git commit -m "&lt;message&gt;"</code> : créé un commit avec son message associé</li>
-		<li><code>git push</code> : envoie vos nouveaux commits dans le dépôt disant</li>
-		<li><code>git pull</code> : récupère les nouveaux commits depuis le dépôt disant</li>
+		<li><code>git commit -m "&lt;message&gt;"</code> : crée un commit avec son message associé</li>
+		<li><code>git push</code> : envoie vos nouveaux commits dans le dépôt distant</li>
+		<li><code>git pull</code> : récupère les nouveaux commits depuis le dépôt distant</li>
 	</ul>
 	<p>La commande <code>git commit -am "&lt;message&gt;"</code> permet de créer un commit avec tous les fichiers modifiés, elle est équivalente à <code>git add</code> de tous vos fichiers, puis faire un commit.</p>
-	<p>La commande <code>git status</code> affiche l'état actuel de votre projet (fichiers modifiés, ajoutés au prochain commit, etc)</p>
+	<p>La commande <code>git status</code> affiche l'état actuel de votre projet (fichiers modifiés, ajoutés au prochain commit, etc.)</p>
 	<aside class="notes">
     	Il y a beaucoup d'autres commandes, nous ne voyons ici que les commandes les plus basiques.<br>
 		La commande <code>git add</code> permet d'ajouter tous les fichiers qui correspondent à un critère. Par exemple <code>git add *.js</code> ajoutera tous les fichiers qui finissent par ".js". La commande <code>git add .</code> ajoutera tous les fichiers du dossier courant et de ses sous-dossiers au prochain commit.
@@ -178,7 +178,7 @@ Il est également possible de ne commit que certains fichiers modifiés, quand o
 	</code></pre>
 	<p>Alice ne peut pas push, car elle ne possède pas la dernière version du code. C'est le commit de Bob qui est le plus récent. Que doit faire Alice ?</p>
 	<aside class="notes">
-		Au moment d'executer le point 5, git effectue un push.
+		Au moment d'exécuter le point 5, git effectue un push.
 Mais le code présent sur le repository est plus récent que le code que possède Alice (car le code du repository contient le commit de Bob). <br>
 Git ne va jamais écraser un changement, ce serait beaucoup trop dangereux, git refuse alors de faire le push.
 En pratique git indique toujours dans le message d'erreur ce qu'il est conseillé de faire. Voir slide suivante...
@@ -190,7 +190,7 @@ En pratique git indique toujours dans le message d'erreur ce qu'il est conseill�
 	<h4>Les conflits</h4>
 	<p>
 		La solution : Alice doit d'abord faire un <code>git pull</code> pour récupérer la dernière version du code.<br>
-		A ce moment, git va mélanger (<i>merge</i>) les deux versions du code, celle d'Alice et celle de Bob.
+		À ce moment, git va mélanger (<i>merge</i>) les deux versions du code, celle d'Alice et celle de Bob.
 		<br><br>
 
 		Deux cas peuvent se produire :
@@ -245,9 +245,9 @@ Automatic merge failed; fix conflicts and then commit the result.
 <p>Alice devra alors résoudre les conflits manuellement, puis <code>git commit</code> et <code>git push</code> </p>
 
 <aside class="notes">
-Git indique les conflit en commençant par la version distante du code ("incomming change") et ensuite la version locale du code ("current change").
-HEAD indique quelle est la version distante. Dans ce cas il s'agit du tout dernier commit effectué dans le repository, appelé "HEAD".
-"b6eeeaef7d4c17e8b7ad2b90968e2d17720ba319" indique le hash du commit. Chaque commit dans git possède un identifiant unique appelé son hash.
+Git indique les conflits entre la version distante du code ("incoming change") et la version locale du code ("current change").
+HEAD indique quelle est la version locale.
+"b6eeeaef7d4c17e8b7ad2b90968e2d17720ba319" indique le hash du dernier commit distant. Chaque commit dans git possède un identifiant unique appelé son hash.
 Ici il y a donc un conflit entre le HEAD et le commit b6eeeaef... 
 </aside>
 </section>
@@ -260,14 +260,14 @@ Ici il y a donc un conflit entre le HEAD et le commit b6eeeaef...
 	<p>
 		GitHub est une plateforme en ligne qui permet d'héberger du code. Elle fournit un stockage pour des dépôts git.
 		<br><br>
-		Il existe d'autres alternatives, par exemple GitLab (hébergement de code en ligne), ou Gitea (hébergement à faire sois-même, <i>self-hosted</i>).
+		Il existe d'autres alternatives, par exemple GitLab (hébergement de code en ligne), ou Gitea (hébergement à faire soi-même, <i>self-hosted</i>).
 	</p>
 	<img src="assets/git04.svg">
 	<br>
-	<p>Les dépôts en ligne fournissent également plein de services complémentaires (gestion de bugs, planification, droits d'accès, etc).</p>
+	<p>Les dépôts en ligne fournissent également plein de services complémentaires (gestion de bugs, planification, droits d'accès, etc.).</p>
 	<br>
 	<aside class="notes">
-		Aujourd'hui les fournisseurs de stockage proposent de nombreuses options en plus du simple stockage. GitHub permet d'executer des actions sur le code (déploiements, compilations, etc), de faire des analyses de sécurité, de tenir une liste des tâches, et bien d'autres fonctions.
+		Aujourd'hui les fournisseurs de stockage proposent de nombreuses options en plus du simple stockage. GitHub permet d'exécuter des actions sur le code (déploiements, compilations, etc.), de faire des analyses de sécurité, de tenir une liste des tâches, et bien d'autres fonctions.
 		GitHub affichera, sous la liste des fichiers et dossiers, le contenu du fichier "README.md" du dossier courant. C'est particulièrement pratique pour créer une page d'accueil de votre projet.
 	</aside>
 </section>
@@ -280,7 +280,7 @@ Ici il y a donc un conflit entre le HEAD et le commit b6eeeaef...
 	<img src="assets/vscode_git_2.svg" width="800px" style="text-align:center;">
 	<p>Si aucun fichier n'est ajouté au commit, VS Code proposera d'ajouter tous les fichiers modifiés.</p>
 	<aside class="notes">
-		L'interface de VS Code pour gérer git est très pratique, n'hésitez pas à l'utiliser. Toutefois, il faut connaître les commandes git pour comprendre ce que l'ont fait et régler des situations que VS Code ne permet parfois pas de résoudre.
+		L'interface de VS Code pour gérer git est très pratique, n'hésitez pas à l'utiliser. Toutefois, il faut connaître les commandes git pour comprendre ce que l'on fait et régler des situations que VS Code ne permet parfois pas de résoudre.
 		<br>
 		D'autres éditeurs de code fournissent des fonctions similaires.
 	</aside>
@@ -303,7 +303,7 @@ dossier/a/exclure/ 	# Ignore le dossier dossier/a/exclure/ et tout son contenu
 
 <section>
 	<h3>git</h3>
-	<h4>Resources</h4>
+	<h4>Ressources</h4>
 	<br>
 	<p>Site officiel : <a href="https://git-scm.com/">https://git-scm.com/</a></p>
 	<p>Livre officiel, gratuit : <a href="https://git-scm.com/book/en/v2">https://git-scm.com/book/en/v2</a></p>

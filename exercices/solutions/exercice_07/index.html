@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Exercice 07</title>
+        <meta charset="UTF-8">
+        <style>
+            li{
+                margin:10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Exercice 07</h1>
+        <p>Dans cet exercice, vous allez écrire plusieurs fois le même programme : d'abord avec des callbacks, puis avec des promesses, puis avec async / await.</p>
+        <p>Tout se passe dans le fichier main.js. Ouvrez la console de votre navigateur pour voir le résultat des tests.</p>
+        <br>
+
+        <p>Contexte</p>
+        <p>
+            Le fichier main.js contient un faux serveur cartographique, dans la section "Code fourni". Il simule un serveur distant : chaque fonction répond après un délai aléatoire, en appelant un callback.
+            Ne modifiez pas ce code, mais lisez-le pour comprendre ce que chaque fonction retourne.
+        </p>
+        <ul>
+            <li><i>loadCapabilities(url, callback)</i> : charge la description du service. Le callback reçoit un objet contenant la liste des couches disponibles, chacune avec un <i>id</i> et un <i>name</i></li>
+            <li><i>loadLayer(id, callback)</i> : charge une couche à partir de son <i>id</i> (et non de son nom). Le callback reçoit un objet contenant l'URL de ses entités, <i>featuresUrl</i></li>
+            <li><i>loadFeatures(featuresUrl, callback)</i> : charge les entités d'une couche. Le callback reçoit un tableau d'entités</li>
+        </ul>
+        <p>
+            Tous les callbacks suivent la même convention : <code>callback(resultat, erreur)</code>. En cas de succès, <i>erreur</i> vaut <i>null</i>. En cas d'échec, <i>resultat</i> vaut <i>null</i> et <i>erreur</i> contient un objet <i>Error</i>.
+        </p>
+        <p>L'objectif est toujours le même : <b>compter le nombre d'entités d'une couche, à partir de son nom</b>. Pour cela, il faut charger la description du service, y trouver l'<i>id</i> de la couche, charger la couche, puis charger ses entités.</p>
+        <p>La méthode <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Array/find">find</a> des tableaux vous sera utile pour trouver une couche par son nom.</p>
+        <br>
+
+        <p>Partie 1 : Callbacks</p>
+        <ol>
+            <li>Complétez la fonction <i>countFeaturesCallback(url, layerName, callback)</i>, en utilisant uniquement les fonctions à callback du serveur</li>
+            <li>En cas de succès, elle appelle <code>callback(nombreEntites, null)</code></li>
+            <li>En cas d'erreur à n'importe quelle étape, elle appelle <code>callback(null, erreur)</code>. Si la couche demandée n'existe pas dans la description du service, l'erreur est à créer vous-même avec <code>new Error(...)</code></li>
+        </ol>
+        <p>Observez la forme de votre code : c'est le <i>callback hell</i>.</p>
+        <br>
+
+        <p>Partie 2 : Promesses</p>
+        <ol>
+            <li>Complétez les fonctions <i>loadCapabilitiesPromise</i>, <i>loadLayerPromise</i> et <i>loadFeaturesPromise</i>. Elles font la même chose que les fonctions du serveur, mais retournent une promesse au lieu de prendre un callback. Utilisez <code>new Promise((resolve, reject) => ...)</code></li>
+            <li>Complétez la fonction <i>countFeaturesPromise(url, layerName)</i>, qui retourne une promesse du nombre d'entités. Utilisez uniquement les fonctions écrites au point précédent, et enchaînez-les avec <code>then</code></li>
+            <li>En cas d'erreur, la promesse retournée doit être rompue. Pour une couche inexistante, il suffit de lever une exception avec <code>throw</code> dans un <code>then</code></li>
+        </ol>
+        <br>
+
+        <p>Partie 3 : async / await</p>
+        <ol>
+            <li>Complétez la fonction <i>countFeaturesAsync(url, layerName)</i>, qui fait la même chose que <i>countFeaturesPromise</i>, mais en utilisant <code>async</code> et <code>await</code></li>
+            <li>Répondez en commentaire dans main.js : pourquoi est-il impossible d'écrire une fonction <i>countFeaturesSync(url, layerName)</i>, sans <code>async</code>, qui retourne directement le nombre d'entités ?</li>
+        </ol>
+        <br>
+
+        <p>Partie 4 : Plusieurs couches</p>
+        <p>Complétez les fonctions suivantes, qui retournent toutes les deux une promesse d'un objet de la forme <code>{ batiments: 152, routes: 87, ... }</code>, contenant le nombre d'entités de chaque couche du service :</p>
+        <ol>
+            <li><i>countAllLayersSequential(url)</i>, qui charge les couches les unes après les autres</li>
+            <li><i>countAllLayersParallel(url)</i>, qui charge toutes les couches en même temps, à l'aide de <a href="https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Global_Objects/Promise/all">Promise.all</a></li>
+        </ol>
+        <p>Les tests affichent la durée de chaque version. Comparez-les.</p>
+        <br>
+
+        <p>Partie 5 (bonus) : Erreurs réseau</p>
+        <p>
+            Le faux serveur peut simuler des erreurs réseau : la variable <i>failureRate</i> indique la probabilité qu'un appel à <i>loadFeatures</i> échoue. Ces erreurs sont de type <i>NetworkError</i>, une classe qui hérite de <i>Error</i>.
+        </p>
+        <ol>
+            <li>Complétez la fonction <i>countFeaturesWithRetry(url, layerName, maxAttempts)</i>, qui fonctionne comme <i>countFeaturesAsync</i>, mais qui réessaie tant qu'une <i>NetworkError</i> se produit, au maximum <i>maxAttempts</i> fois</li>
+            <li>Les autres erreurs (par exemple une couche inexistante) ne doivent pas être réessayées : la promesse doit être rompue immédiatement</li>
+            <li>Si toutes les tentatives échouent, la promesse est rompue avec la dernière erreur</li>
+        </ol>
+        <p>Indice : <code>instanceof</code> permet de savoir si une erreur est d'un type donné.</p>
+        <br>
+
+        <p>Le bas du fichier main.js contient des tests, qui servent aussi d'exemples d'utilisation de toutes les fonctions décrites ci-dessus. Une fois l'exercice terminé, ce fichier ne doit afficher aucune erreur dans la console.</p>
+
+        <script src="main.js"></script>
+    </body>
+</html>

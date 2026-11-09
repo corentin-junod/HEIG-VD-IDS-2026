@@ -75,3 +75,10 @@ table td, table img{
     border-radius: 15px;
     border: 2px solid #f2af96;
 }
+
+.advice{
+    background-color: #1a627a;
+    padding: 10px;
+    border-radius: 15px;
+    border: 2px solid #8c9bd1;
+}

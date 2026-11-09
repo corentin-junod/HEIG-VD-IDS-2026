@@ -1,0 +1,92 @@
+<section>
+	<br><br><br>
+	<h1>JavaScript</h1>
+	<h2>Proxy</h2>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Proxy</h4>
+	<p>Un Proxy est un objet qui altère le comportement d'un autre objet</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		const obj = {
+			val1: 5
+		};
+		const handler = {};
+		const proxy = new Proxy(obj, handler);
+		console.log(proxy.val1); // 5
+    </code></pre>
+	<p>Le constructeur de Proxy prend deux arguments : l'objet original et un <i>handler</i> qui en modifiera le comportement</p>
+	<p>Dans l'exemple ci-dessus le handler est vide, utiliser <code>proxy</code> est donc équivalent à utiliser <code>obj</code></p>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Proxy</h4>
+	<p>Le <i>handler</i> permet de définir un comportement spécifique</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		const obj = {
+			val1: 5,
+			val2: 8
+		};
+		const handler = {
+			get(obj, prop) { // Fonction qui altère l'accès aux propriétés
+				if (prop === "val1") {
+					return 10;
+				}
+				// Cette ligne spéciale indique d'utiliser l'accès de l'objet de base
+				return Reflect.get(...arguments);
+			}
+		};
+		const proxy = new Proxy(obj, handler);
+		console.log(proxy.val1); // 10
+		console.log(proxy.val2); // 8
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Proxy</h4>
+	<p>On peut altérer toutes sortes de propriétés</p>
+	<pre style="width:100%"><code data-trim data-noescape class="language-javascript">
+		const obj = {
+			// ...
+		};
+		const handler = {
+			get(obj, prop) { // Fonction qui altère l'accès aux propriétés
+				// ...
+				return Reflect.get(...arguments);
+			},
+			set(obj, prop, value){ // Fonction qui altère l'écriture des propriétés
+				// ...
+				return Reflect.set(...arguments);
+			}
+			// Il en existe d'autres, pour les opérateurs "in", pour la suppression avec "delete",
+			// pour l'appel à des fonctions, etc.
+		};
+		const proxy = new Proxy(obj, handler);
+    </code></pre>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Proxy</h4>
+	<p>Quand utiliser des Proxy ?</p>
+	<ul>
+		<li>Pour ajouter un comportement spécifique à plusieurs objets (p.ex. logging)</li>
+		<li>Pour modifier le comportement d'un objet non modifiable (p.ex. importé d'une librairie)</li>
+		<li><i>Mais pas pour remplacer l'héritage !</i></li>
+	</ul>
+	<img src="assets/proxy.svg"/>
+</section>
+
+<section>
+	<h3>JavaScript</h3>
+	<h4>Proxy</h4>
+	<br>
+	<p>Site officiel : <br>
+		<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy</a>
+	</p>
+	 <br>
+	<p>W3Schools: <a href="https://www.w3schools.com/js/js_meta_proxy.asp">https://www.w3schools.com/js/js_meta_proxy.asp</a></p>
+</section>
