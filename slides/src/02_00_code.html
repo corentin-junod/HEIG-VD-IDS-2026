@@ -1,0 +1,1152 @@
+<section>
+	<br><br><br>
+	<h1>Programmation</h1>
+	<h2>Erreurs à éviter et bonnes pratiques</h2>
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>L'objectif</h4>
+	<br><br><br><br><br><br>
+	<h2>Quel est l'objectif d'écrire un code propre ?</h2>
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>L'objectif</h4>
+	<p>Cela permet :</p>
+	<ul>
+		<li class="fragment fade-in">aux autres d'utiliser notre code</li>
+		<li class="fragment fade-in">à soi-même, lorsqu'on aura besoin de le modifier</li>
+		<li class="fragment fade-in">d'éviter des erreurs de logique et des bugs</li>
+		<li class="fragment fade-in">d'être plus efficace dans le futur, pour ajouter des fonctions ou corriger des bugs
+		</li>
+	</ul>
+	<p class="fragment fade-in">On produit du code de qualité pour les humains, pas pour la machine</p>
+	<aside class="notes">
+		Ces raisons sont suffisantes pour toujours produire du code respectant les standards de qualité.
+		Un code difficile à comprendre sera souvent ignoré, lui faisant perdre beaucoup de son intérêt.
+	</aside>
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>La qualité</h4>
+	<br><br>
+	<p>
+		« Rendez les choses aussi simples que possible, mais pas plus simples. » <br>
+		— Citation attribuée à Albert Einstein
+	</p>
+	<br><br>
+	<p>
+		Plus concrètement : <br>
+		<b><i>Tout code doit être spontanément évidemment juste</i></b>
+	</p>
+
+	<aside class="notes">
+		Au-delà des belles phrases, l'objectif final d'un code de qualité est d'être facilement compréhensible par les
+		humains.
+		En particulier, on ne cherchera pas à optimiser ou anticiper plus que nécessaire.
+		Un bon code doit être aussi simple et direct que possible, l'intention doit être claire et il doit être évident
+		que le code accomplit ce qu'il est censé faire sans erreur.
+		Il se trouve que cela est plus difficile à faire qu'il n'y paraît...
+
+		On connaît généralement ce principe sous l'acronyme K.I.S.S. : Keep It Simple, Stupid
+	</aside>
+</section>
+
+<section>
+	<br><br><br>
+	<h1>Programmation</h1>
+	<h2>Les problèmes récurrents</h2>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 1 : Dépendances et code spaghetti</p>
+	<pre><code data-trim data-noescape class="language-python">
+	def get_x_y_centered(xs, ys, side, min_y_extent):
+		if len(xs) <= 0: 
+			return np.empty(0)
+		x_min, y_min = np.min(xs), np.min(ys)
+		x_extent = np.max(xs) - x_min
+		y_extent = max(np.max(ys) - y_min, min_y_extent)
+		resolution = x_extent / (side - 1) if x_extent > y_extent else y_extent / (side - 1)
+		if resolution <= 0: 
+			return np.empty(0)
+		xs_centered = ((xs - x_min + (side * resolution - x_extent) / 2.0) / resolution)
+		ys_centered = ((ys - y_min + (side * resolution - y_extent) / 2.0) / (-resolution))
+		return np.column_stack((xs_centered, ys_centered)).astype(np.int32)
+    </code></pre>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 1 : Dépendances et code spaghetti</p>
+	<img src="assets/dependencies_1.png">
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 1 : Dépendances et code spaghetti</p>
+	<img src="assets/dependencies_2.png">
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 1 : Dépendances et code spaghetti</p>
+	<img src="assets/class_dependencies.png">
+	<p class="small" style="float:right">https://www.researchgate.net/figure/Class-Dependencies-of-Like-UCP-Program_fig2_329420327</p>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 1 : Dépendances et code spaghetti</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>Isoler le code / la logique en plusieurs parties &nbsp; → &nbsp; Fonctionnaliser</li>
+	</ul>
+	<img width="60%" src="assets/fonction.drawio.svg">
+	<aside class="notes">
+		Une des meilleures manières d'isoler du code est de le mettre dans une fonction dédiée. <br>
+		Mais il faut faire attention à la manière de fonctionnaliser. On voudra des fonctions avec un minimum d'arguments
+		et un minimum de valeurs de retour, afin de réduire les dépendances avant et après la fonction.
+	</aside>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 1 : Dépendances et code spaghetti</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>Isoler le code / la logique en plusieurs parties &nbsp; → &nbsp; Fonctionnaliser</li>
+		<li>L'encapsulation</li>
+	</ul>
+	<img width="60%" src="assets/encapsulation.drawio.svg">
+	<aside class="notes">
+		L'encapsulation en programmation orientée objet vise le même principe : en exposant uniquement un sous-ensemble de fonctions
+		de l'objet pour communiquer avec l'extérieur, on s'assure d'avoir peu de dépendances avec l'extérieur.
+		L'encapsulation a aussi d'autres avantages. Si on souhaite modifier la logique interne de l'objet, on se garantit de pouvoir le faire
+		sans avoir à adapter d'autres parties du code.
+	</aside>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 1 : Dépendances et code spaghetti</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>Isoler le code / la logique en plusieurs parties &nbsp; → &nbsp; Fonctionnaliser</li>
+		<li>L'encapsulation</li>
+		<li>Séparer son code en plusieurs fichiers</li>
+	</ul>
+	<aside class="notes">
+		Séparer son code est aussi une bonne pratique qui incite à ne pas créer trop de dépendances entre fichiers.
+		Cela facilite aussi la lecture du code, on se perd rapidement dans un fichier trop long.
+	</aside>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Voir :</p>
+	<ul>
+		<li><a href="https://fr.wikipedia.org/wiki/Principe_K.I.S.S.">Principe K.I.S.S.</a></li>
+		<li><a href="https://fr.wikipedia.org/wiki/Principe_de_responsabilit%C3%A9_unique">Principe de la responsabilité unique</a></li>
+		<li><a href="https://fr.wikipedia.org/wiki/S%C3%A9paration_des_pr%C3%A9occupations">Principe de la séparation des préoccupations</a></li>
+		<li><a href="https://fr.wikipedia.org/wiki/Encapsulation_(programmation)">L'encapsulation</a></li>
+		<li><a href="https://fr.wikipedia.org/wiki/SOLID_(informatique)">Principes S.O.L.I.D.</a></li>
+		<li><a href="https://fr.wikipedia.org/wiki/Loi_de_D%C3%A9m%C3%A9ter">Loi de Déméter</a></li>
+	</ul>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		function is_palindrome(array){
+			for(let i=0; i &lt; array.length/2; i++){
+				if(array[i] !== array.reverse()[i]){
+					return false;
+				}
+			}
+			return true;
+		}
+
+		const values_1 = [1,2,3,4,1]
+		const values_1_result = is_palindrome(values_1)
+		console.log(values_1 + " palindrome ? " + values_1_result)
+
+		const values_2 = [1,2,3,4]
+		const values_2_result = is_palindrome(values_2)
+		console.log(values_2 + " palindrome ? " + values_2_result)
+    </code></pre>
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		function is_palindrome(array){
+			for(let i=0; i &lt; array.length/2; i++){
+				if(array[i] !== array.reverse()[i]){
+					return false;
+				}
+			}
+			return true;
+		}
+
+		const values_1 = [1,2,3,4,1]
+		const values_1_result = is_palindrome(values_1)
+		console.log(values_1 + " palindrome ? " + values_1_result) // 1,2,3,4,1 palindrome ? false
+
+		const values_2 = [1,2,3,4]
+		const values_2_result = is_palindrome(values_2)
+		console.log(values_2 + " palindrome ? " + values_2_result) // 4,3,2,1 palindrome ? false
+		// L'affichage de values_2 est inversé ?!
+    </code></pre>
+	<aside class="notes">
+        Ici la fonction "array.reverse" retourne le tableau. Comme les tableaux sont passés par référence à la fonction is_palindrome, à chaque passage dans la boucle for le tableau est retourné.
+		L'effet est difficile à voir, car si le tableau contient un nombre impair d'éléments (comme values_1), le tableau sera retourné un nombre pair de fois, sans effet visible.
+		Si le tableau contient un nombre pair d'éléments, il sera retourné un nombre impair de fois, provoquant un effet de bord.
+    </aside>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		function is_palindrome(array){
+			for(let i=0; i &lt; array.length/2; i++){
+				if(array[i] !== array.reverse()[i]){
+					return false;
+				}
+			}
+			return true;
+		}
+
+		const values_1 = [1,2,3,4,1]
+		console.log(values_1 + " palindrome ? " + is_palindrome(values_1)) 
+
+		const values_2 = [1,2,3,4]
+		console.log(values_2 + " palindrome ? " + is_palindrome(values_2)) 
+    </code></pre>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		function is_palindrome(array){
+			for(let i=0; i &lt; array.length/2; i++){
+				if(array[i] !== array.reverse()[i]){
+					return false;
+				}
+			}
+			return true;
+		}
+
+		const values_1 = [1,2,3,4,1]
+		console.log(values_1 + " palindrome ? " + is_palindrome(values_1)) // 1,2,3,4,1 palindrome ? false
+
+		const values_2 = [1,2,3,4]
+		console.log(values_2 + " palindrome ? " + is_palindrome(values_2)) // 1,2,3,4 palindrome ? false
+    </code></pre>
+	<aside class="notes">
+		De manière encore moins évidente, si on avait écrit le code ci-dessus, on ne se serait aperçu de rien, car les console.log affichent le tableau avant d'appeler is_palindrome
+    </aside>
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		class NumberArray {
+			constructor(content){ // On suppose que le tableau ne contient que des nombres
+				this.content = content;
+			}
+			push(value){ // On suppose aussi qu'on ne peut ajouter que des nombres
+				this.content.push(value);
+			}
+			pop(){ // Retire un nombre du tableau
+				this.content.pop();
+			}
+			mean(){
+				let sum = 0;
+				for(const val of this.content) sum += val;
+				return sum / this.content.length;
+			}
+			// ... éventuellement d'autres fonctions
+		}
+    </code></pre>
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<table>
+		<tr>
+			<td>
+				<pre style="width:initial;"><code data-trim data-noescape class="language-javascript">
+					class NumberArray {
+						constructor(content){ // Tableau de nombres
+							this.content = content;
+						}
+						push(value){
+							this.content.push(value);
+						}
+						pop(){
+							this.content.pop();
+						}
+						mean(){
+							let sum = 0;
+							for(const val of this.content) sum += val;
+							return sum / this.content.length;
+						}
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre style="width:initial;"><code data-trim data-noescape class="language-javascript">
+					// Qu'affiche ce code ?
+
+					const t1 = [4,5];
+					const t1_array = new NumberArray(t1);
+					console.log(t1_array.mean());
+
+					t1_array.pop();
+					console.log(t1_array.mean());
+
+					t1_array.pop();
+					console.log(t1_array.mean());
+
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<table>
+		<tr>
+			<td>
+				<pre style="width:initial;"><code data-trim data-noescape class="language-javascript">
+					class NumberArray {
+						constructor(content){ // Tableau de nombres
+							this.content = content;
+						}
+						push(value){
+							this.content.push(value);
+						}
+						pop(){
+							this.content.pop();
+						}
+						mean(){
+							let sum = 0;
+							for(const val of this.content) sum += val;
+							return sum / this.content.length;
+						}
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre style="width:initial;"><code data-trim data-noescape class="language-javascript">
+					// Qu'affiche ce code ?
+
+					const t1 = [4,5];
+					const t1_array = new NumberArray(t1);
+					console.log(t1_array.mean()); // 4.5
+
+					t1_array.pop();
+					console.log(t1_array.mean()); // 4
+
+					t1_array.pop();
+					console.log(t1_array.mean()); // NaN
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+	<p class="fragment fade-in">Problème dans ce cas : les objets ont un état interne, qui peut être modifié dans n'importe quel ordre</p>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<table>
+		<tr>
+			<td>
+				<pre style="width:initial;"><code data-trim data-noescape class="language-javascript">
+					class NumberArray {
+						constructor(content){ // Tableau de nombres
+							this.content = content;
+						}
+						push(value){
+							this.content.push(value);
+						}
+						pop(){
+							this.content.pop();
+						}
+						mean(){
+							let sum = 0;
+							for(const val of this.content) sum += val;
+							return sum / this.content.length;
+						}
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre style="width:initial;"><code data-trim data-noescape class="language-javascript">
+					// Qu'affiche ce code ?
+
+					const t1 = [4,5];
+					const t1_array = new NumberArray(t1);
+					const t2_array = new NumberArray(t1);
+
+					console.log(t1_array.mean());
+
+					t1_array.pop();
+					console.log(t1_array.mean());
+
+					console.log(t2_array.mean());
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<table>
+		<tr>
+			<td>
+				<pre style="width:initial;"><code data-trim data-noescape class="language-javascript">
+					class NumberArray {
+						constructor(content){ // Tableau de nombres
+							this.content = content;
+						}
+						push(value){
+							this.content.push(value);
+						}
+						pop(){
+							this.content.pop();
+						}
+						mean(){
+							let sum = 0;
+							for(const val of this.content) sum += val;
+							return sum / this.content.length;
+						}
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre style="width:initial;"><code data-trim data-noescape class="language-javascript">
+					// Qu'affiche ce code ?
+
+					const t1 = [4,5];
+					const t1_array = new NumberArray(t1);
+					const t2_array = new NumberArray(t1);
+
+					console.log(t1_array.mean()); // 4.5
+
+					t1_array.pop();
+					console.log(t1_array.mean()); // 4
+
+					console.log(t2_array.mean()); // 4
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+	<p class="fragment fade-in">Problème dans ce cas : le passage par référence vaut aussi pour les objets, ici les deux objets modifient t1</p>
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>Les constantes</li>
+	</ul>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const P1 = [5, 2];
+		const P2 = [6, 3];
+		if(merge_points){
+			P2 = P1; // Erreur : P2 est constant
+		}
+		// ... reste du code
+		P2[0] = 8; // Si P2 n'était pas constant, cela aurait pu modifier P2 et P1
+	</code></pre>
+	<p class="fragment fade-in">
+		Mais attention ! Cela garantit seulement que la valeur ne sera pas réassignée. Un tableau constant peut être modifié (voir exemple sur les palindromes).
+		Utiliser des constantes n'est pas une solution complète.
+	</p>
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>L'immuabilité</li>
+	</ul>
+	<p>
+		<i>Un objet immuable est un objet dont l'état ne peut pas être modifié</i>
+	</p>
+	<pre class="fragment fade-in"><code data-trim data-noescape class="language-javascript">
+		class NumberArray {
+			#content; // le # indique un attribut privé, inaccessible en dehors de la classe
+			constructor(content){
+				this.#content = Array.from(content); // copie du tableau, pas de problème de référence
+			}
+			push(value){
+				return new NumberArray(this.#content.concat([value])); // concat retourne un nouveau tableau
+			}
+			pop(){
+				return new NumberArray(this.#content.slice(0, -1)); // slice retourne un nouveau tableau
+			}
+			// ... etc
+		}
+	</code></pre>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>L'immuabilité</li>
+	</ul>
+	<p>Quel est l'inconvénient d'un objet immuable ?</p>
+	<p class="fragment fade-in">Son contenu est dupliqué à chaque opération. Pour de gros objets, cela devient coûteux en mémoire et en temps, voire irréalisable.</p>
+	<p class="fragment fade-in">Parfois, on a besoin d'objets partagés entre plusieurs parties du programme, sans quoi le code devient beaucoup plus complexe.</p>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>L'immuabilité</li>
+	</ul>
+	<br>
+	<img src="assets/array_functions.png" height="350">
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>La programmation fonctionnelle</li>
+	</ul>
+	<pre class="fragment fade-in"><code data-trim data-noescape class="language-scala">
+		// Scala
+
+		def countVowels(str: String): Int =
+			// Toutes les valeurs sont des constantes par défaut
+			val vowels = Set('a', 'e', 'i', 'o', 'u')
+			// Les opérations sont toutes immuables et peuvent s'enchaîner
+			str.map(letter => if (vowels contains letter) 1 else 0).foldLeft(0)(_ + _)
+
+
+		val vowelCount = countVowels("hello scala programming")
+		println(s"Number of vowels: $vowelCount") // Affichera "Number of vowels: 7"
+	</code></pre>
+	<aside class="notes">
+		Scala est un langage de programmation fonctionnel. La plupart des opérations sont un enchaînement de fonctions sans effet de bord.
+		Les valeurs ("val") sont toutes constantes par défaut et ne servent qu'à stocker les résultats de calculs.
+		L'avantage est l'absence d'effet de bord. Il est clair ici que countVowels ne peut pas modifier l'état du programme.
+    </aside>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>La programmation fonctionnelle</li>
+	</ul>
+	<p>Il existe des méthodes similaires en JavaScript, qui s'inspirent de la programmation fonctionnelle :</p>
+	<table>
+		<tr>
+			<td>
+				<ul>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map">Array.map</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter">Array.filter</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find">Array.find</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every">Array.every</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some">Array.some</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce">Array.reduce</a></li>
+				</ul>
+			</td>
+			<td>
+				<ul>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replaceAll">String.replaceAll</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/search">String.search</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/slice">String.slice</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split">String.split</a></li>
+					<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/substring">String.substring</a></li>
+				</ul>
+			</td>
+		</tr>
+	</table>
+
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 2 : Les effets de bord</p>
+	<p>Les solutions : </p>
+	<ul>
+		<li>La programmation fonctionnelle</li>
+	</ul>
+	<p>Depuis ES2023, certaines méthodes ont une version qui renvoie une copie au lieu de modifier le tableau :
+		<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toReversed">Array.toReversed</a> (au lieu de <code>reverse</code>),
+		<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toSorted">Array.toSorted</a> (au lieu de <code>sort</code>)
+	</p>
+	<pre class="fragment fade-in"><code data-trim data-noescape class="language-javascript">
+		function is_palindrome(array){
+			const reversed = array.toReversed(); // copie inversée, array n'est pas modifié
+			for(let i=0; i &lt; array.length/2; i++){
+				if(array[i] !== reversed[i]){
+					return false;
+				}
+			}
+			return true;
+		}
+	</code></pre>
+	<aside class="notes">
+		En plus de supprimer l'effet de bord, le tableau n'est inversé qu'une seule fois au lieu d'une fois par itération.
+	</aside>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Quelques conseils généraux</p>
+	<ol>
+		<li class="fragment fade-in">
+			Respectez les standards de notation (du langage et du projet sur lequel vous travaillez). Exemples :
+			<ul>
+				<li>Les instances d'objets en minuscules : <code>const monRectangle = ....</code></li>
+				<li>Les classes avec une majuscule : <code>const monRectangle = new Rectangle()</code></li>
+				<li>Les constantes globales tout en majuscules : <code>const NB_DIMENSIONS = 3</code></li>
+			</ul>
+		</li>
+		<li class="fragment fade-in">Restez cohérents, utilisez les mêmes noms pour de mêmes choses. Exemples :
+			<ul>
+				<li>Choisissez entre camelCase et snake_case</li>
+				<li>Si vous nommez une classe "Disk", utilisez le mot "disk" partout, et ne mélangez pas avec "Circle"</li>
+				<li>Prenez le temps avant de choisir un mot. Il existe souvent un mot exact pour ce que l'on veut.<br>
+					Par exemple, préférez <code>isRetired</code> plutôt que <code>isOld</code>
+				</li>
+				<li>Utilisez des termes en anglais</li>
+			</ul>
+		</li>
+	</ol>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Conseils pour nommer des <i>variables</i></p>
+	<ol>
+		<li class="fragment fade-in">Utilisez des <i>noms</i><br><code>average, surname, mainCharacter, frontColor, etc</code></li>
+		<li class="fragment fade-in">Indiquez le type dans le nom<br><code>numberTiles (entier), &nbsp; isValid (booléen), &nbsp; resolutionsList (array), &nbsp; etc</code></li>
+		<li class="fragment fade-in">Évitez les abréviations peu communes<br><code>centerCoordinatesPerTile</code>, et non <code>ctrCooPTile</code> </li>
+		<li class="fragment fade-in">Plus la variable a une grande portée, plus le nom doit être descriptif
+		<pre class="fragment fade-in"><code data-trim data-noescape class="language-javascript">
+			function arraySum(table){
+				let sum = 0;                        // "sum" acceptable, car évident dans ce contexte
+				for(let i=0; i&lt;table.length; i++){	// "i" acceptable, car la boucle ne fait qu'une ligne
+					sum += table[i];                  // et qu'il s'agit bien d'un itérateur
+				}
+				return sum;
+			}
+		</code></pre>
+		</li>
+	</ol>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Conseils pour nommer des <i>variables</i></p>
+	<pre class="fragment fade-in"><code data-trim data-noescape class="language-javascript">
+		function mul(m1, m2){
+			let res = new Array(m1.length);
+			for (let i = 0; i &lt; m1.length; i++){
+				res[i] = new Array(m2[0].length);
+			}
+			for (let i = 0; i &lt; m1.length; i++) {
+				for (let ii = 0; ii &lt; m2[0].length; ii++) {
+					res[i][ii] = 0;
+					for (let iii = 0; iii &lt; m2.length; iii++)
+						res[i][ii] += m1[i][iii] * m2[iii][ii];
+				}
+			}
+			return res;
+		}
+	</code></pre>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Conseils pour nommer des <i>variables</i></p>
+	<pre class="fragment fade-in"><code data-trim data-noescape class="language-javascript">
+		function multiplyMatrices(matrix1, matrix2){
+			const rowCount = matrix1.length;
+			const columnCount = matrix2[0].length;
+			const result = new Array(rowCount);
+			for (let row = 0; row &lt; rowCount; row++){
+				result[row] = new Array(columnCount);
+			}
+			for (let row = 0; row &lt; rowCount; row++) {
+				for (let column = 0; column &lt; columnCount; column++) {
+					result[row][column] = 0;
+					for (let i = 0; i &lt; matrix2.length; i++)
+						result[row][column] += matrix1[row][i] * matrix2[i][column];
+				}
+			}
+			return result;
+		}
+	</code></pre>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Conseils pour nommer des <i>fonctions</i></p>
+	<ol>
+		<li class="fragment fade-in">Utilisez des <i>verbes</i><br><code>toggleVisibility, changeColor, increaseLife, resetState, etc</code></li>
+		<li class="fragment fade-in">Nommez clairement les paramètres de la fonction (de la même manière que des variables)</li>
+		<li class="fragment fade-in">Pensez à l'utilisation des méthodes avec des objets<br><code>table.mean(), warrior.takeDamage(), map.resetOrientation(), etc</code></li>
+		<li class="fragment fade-in">Évitez les verbes imprécis<br><code>object.compute(), shape.getSize(), color.display()</code></li>
+	</ol>
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Quelques conseils supplémentaires</p>
+	<ul>
+		<li class="fragment fade-in">Ne mélangez pas attributs et méthodes (pas comme en JavaScript avec Array.length et Array.reverse())</li>
+		<li class="fragment fade-in">Inspirez-vous de ce qui existe déjà, mais restez critiques</li>
+	</ul>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Les commentaires et le self-documenting code</p>
+	<p>Quand faut-il utiliser les commentaires ?</p>
+	<p class="fragment fade-in">Ou plutôt : Quand ne faut-il <i>pas</i> les utiliser ?</p>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Les commentaires et le self-documenting code</p>
+	<p>Ne pas utiliser de commentaire</p>
+	<div class="fragment fade-in">
+		<ul>
+		<li>Si le commentaire ne fait que décrire ce que fait le code
+		<pre><code data-trim data-noescape class="language-javascript">
+			function arraySum(table){
+				let sum = 0;                        
+				// Parcourt tous les éléments du tableau un par un
+				for(let i=0; i&lt;table.length; i++){
+					sum += table[i];                  
+				}
+				return sum;
+			}
+		</code></pre>
+		</li>
+		</ul>
+		<p>Ici le commentaire ne sert à rien, il n'apporte rien par rapport à la ligne d'en dessous</p>
+	</div>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Les commentaires et le self-documenting code</p>
+	<p>Ne pas utiliser de commentaire</p>
+	<ul>
+		<li>Si le commentaire peut être intégré à la nomenclature du code
+		<pre><code data-trim data-noescape class="language-javascript">
+			// Calcule la somme d'un tableau
+			function sum(t){
+				let s = 0;                        
+				for(let i=0; i&lt;t.length; i++){
+					s += t[i];                  
+				}
+				return s;
+			}
+		</code></pre>
+		</li>
+	</ul>
+	<p>Ici il est préférable de nommer correctement la fonction et ses variables</p>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Les commentaires et le self-documenting code</p>
+	<p>
+		Le code doit être <i>self-documenting</i>, c'est-à-dire qu'il doit être suffisamment clair pour ne pas nécessiter de commentaire.<br>
+		La plupart du temps, quand on veut écrire un commentaire, c'est qu'on a mal nommé quelque chose, ou qu'il faut simplifier le code.
+	</p>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Les commentaires sont utilisés presque exclusivement pour</p>
+	<ul>
+		<li class="fragment fade-in">Apporter une précision spécifique sur le comportement du code, quand cela n'est pas clair</li>
+		<li class="fragment fade-in">Justifier une raison d'avoir fait les choses d'une manière spécifique</li>
+		<li class="fragment fade-in">Donner une référence externe</li>
+		<li class="fragment fade-in">Créer la documentation d'une librairie
+		<pre><code data-trim data-noescape class="language-javascript">
+			/** Return the color as an array. This function maintains a cache of calculated
+			*   arrays which means the result should not be modified.
+			*   @param {Color|string} color Color.
+			*   @return {Color} Color.
+			*   @api */
+			export function asArray(color) {
+				if (Array.isArray(color)) {
+					return color;
+				}
+				return fromString(color);
+			}
+		</code></pre>
+		</li>
+	</ul>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 3 : La clarté et la lisibilité</p>
+	<p>Les commentaires sont utilisés presque exclusivement pour</p>
+	<ul>
+		<li>Apporter une précision spécifique sur le comportement du code, quand cela n'est pas clair</li>
+		<li>Justifier une raison d'avoir fait les choses d'une manière spécifique</li>
+		<li>Donner une référence externe</li>
+		<li>Créer la documentation d'une librairie
+		<img src="assets/api.png">
+		</li>
+	</ul>
+</section>
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 4 : L'optimisation prématurée</p>
+	<p>Que font ces deux fonctions ?</p>
+	<table>
+		<tr>
+			<td>
+				<pre class="fragment fade-in"><code data-trim data-noescape class="language-javascript">
+					function something(array) {
+						for (let i=0; i < array.length; i++){
+							for (let j=0; j < array.length-1; j++){
+								if (array[j] > array[j+1]){
+									const temp = array[j];
+									array[j] = array[j+1];
+									array[j+1] = temp;
+								}
+							}
+						}
+						return array;
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre class="fragment fade-in"><code data-trim data-noescape class="language-javascript">
+					function something(array) {
+						if (array.length <= 1) {
+							return array;
+						}
+						const pivot = array[array.length-1];
+						const left = [];
+						const right = [];
+						for (let i = 0; i < array.length-1; i++) {
+							if (array[i] < pivot) {
+								left.push(array[i]);
+							} else {
+								right.push(array[i]);
+							}
+						}
+						return [...something(left), pivot, ...something(right)];
+					}
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 4 : L'optimisation prématurée</p>
+	<p>Que font ces deux fonctions ?</p>
+	<table>
+		<tr>
+			<td>
+				<pre><code data-trim data-noescape class="language-javascript">
+					function swap_sort(array) {
+						for (let i=0; i < array.length; i++){
+							for (let j=0; j < array.length-1; j++){
+								if (array[j] > array[j+1]){
+									const temp = array[j];
+									array[j] = array[j+1];
+									array[j+1] = temp;
+								}
+							}
+						}
+						return array;
+					}
+				</code></pre>
+			</td>
+			<td>
+				Pour chaque élément, on parcourt tout le tableau et on inverse toutes les paires qui ne sont pas dans le bon ordre.
+			</td>
+		</tr>
+	</table>
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 4 : L'optimisation prématurée</p>
+	<p>Que font ces deux fonctions ?</p>
+	<table>
+		<tr>
+			<td>
+				<pre><code data-trim data-noescape class="language-javascript">
+					function quicksort(array) {
+						if (array.length <= 1) {
+							return array;
+						}
+						const pivot = array[array.length-1];
+						const left = [];
+						const right = [];
+						for (let i = 0; i < array.length-1; i++) {
+							if (array[i] < pivot) {
+								left.push(array[i]);
+							} else {
+								right.push(array[i]);
+							}
+						}
+						return [...quicksort(left), pivot, ...quicksort(right)];
+					}
+				</code></pre>
+			</td>
+			<td>
+				<img src="assets/quicksort.svg">
+			</td>
+		</tr>
+	</table>
+</section>
+
+
+<section data-transition="none">
+	<h3>Programmation</h3>
+	<h4>Les problèmes récurrents</h4>
+	<p>Problème n° 4 : L'optimisation prématurée</p>
+	<p>La loi d'Amdahl :</p>
+	<p>
+		<i>The overall performance improvement gained by optimizing a single part of a system is limited by the fraction of time that the improved part is actually used</i>
+	</p>
+	<br>
+	<p>Autrement dit : Il est peu utile d'optimiser une partie du code qui ne prend qu'une petite fraction du temps total d'exécution</p>
+	<br>
+	<p>Il faut éviter les optimisations prématurées (<i>"premature optimization is the root of all evil"</i>, Donald Knuth)</p>
+	<br>
+	<p>La seule méthode efficace : mesurer les temps d'exécution et optimiser en conséquence</p>
+</section>
+
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<div class="fragment fade-in">
+		<p>Demandons à ChatGPT : <br> </p>
+		<img src="assets/llm1.png" width="50%">
+	</div>
+
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<div class="fragment fade-in">
+		<p>D'emblée le problème est identifié...</p>
+		<img src="assets/llm2.png">
+	</div>
+	<div class="fragment fade-in">
+		<p>... et la réponse finale est fausse... oups...</p>
+		<img src="assets/llm3.png">
+		<p>Avec plusieurs essais, la réponse est parfois correcte, parfois non.</p>
+		<p>Claude Sonnet 4.6 produit le même résultat que ChatGPT ; Gemini et Claude Opus 5.5, en revanche, ne se trompent pas et répondent correctement.</p>
+	</div>
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+		<p>Est-ce que ChatGPT écrit du bon code ? <br> </p>
+		<img src="assets/llm4.png">
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		/**
+		* Multiplies two matrices.
+		* @param {number[][]} A - First matrix (m x n)
+		* @param {number[][]} B - Second matrix (n x p)
+		* @returns {number[][]} Resulting matrix (m x p)
+		* @throws {Error} If matrices are invalid or incompatible
+		*/
+		function multiplyMatrices(A, B) {
+			// Validate matrices
+			if (!Array.isArray(A) || !Array.isArray(B) || A.length === 0 || B.length === 0) {
+				throw new Error("Both inputs must be non-empty matrices.");
+			}
+
+		....
+	</code></pre>
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<img src="assets/llm6.png" width="1200">
+</section>
+
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		....
+		const aRows = A.length;
+		const aCols = A[0].length;
+		const bRows = B.length;
+		const bCols = B[0].length;
+
+		// Ensure matrices are rectangular
+		if (!A.every(row => Array.isArray(row) && row.length === aCols)) {
+			throw new Error("Matrix A is not rectangular.");
+		}
+
+		if (!B.every(row => Array.isArray(row) && row.length === bCols)) {
+			throw new Error("Matrix B is not rectangular.");
+		}
+
+		// Check multiplication compatibility
+		if (aCols !== bRows) {
+			throw new Error(
+			`Matrix dimensions mismatch: A is ${aRows}x${aCols}, B is ${bRows}x${bCols}.`
+			);
+		}
+
+		....
+	</code></pre>
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<img src="assets/llm7.png" width="1200">
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		....
+			// Initialize result matrix (m x p)
+			const result = Array.from({ length: aRows }, () => Array(bCols).fill(0));
+
+			// Matrix multiplication
+			for (let i = 0; i < aRows; i++) {
+				for (let k = 0; k < aCols; k++) {
+					const aik = A[i][k];
+					for (let j = 0; j < bCols; j++) {
+						result[i][j] += aik * B[k][j];
+					}
+				}
+			}
+
+			return result;
+		}
+	</code></pre>
+</section>
+	
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<img src="assets/llm8.png" width="1200">
+</section>
+
+<section>
+	<h3>Programmation</h3>
+	<h4>Et les LLM ?</h4>
+	<img src="assets/llm9.png" width="600">
+
+	<img class="fragment fade-in" src="assets/doubt.png" width="600">
+</section>
+

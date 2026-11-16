@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Exercice 09</title>
+        <meta charset="UTF-8">
+        <style>
+            html{
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            li{
+                margin:10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Exercice 09</h1>
+        <div style="border:1px solid red;border-radius: 5px;padding:10px;">
+            Note : Cet exercice utilise les modules JavaScript. Pour que ceux-ci fonctionnent en local sur votre ordinateur, il vous faut un serveur web local.
+            Vous pouvez démarrer un serveur web local en ouvrant un terminal et en vous plaçant dans le dossier des exercices, puis en tapant la commande :
+            <code>python3 -m http.server</code> ou <code>python -m http.server</code>.<br>
+            Dans votre navigateur, allez ensuite à la page <code>127.0.0.1:8000</code>
+        </div>
+        <p>
+            En relisant votre exercice 05, vous remarquez que les classes Point et Polygon ont plein d'effets de bord. <br><br>
+            Réécrivez ces classes de manière à les rendre immuables. C'est à dire qu'un Point ou un Polygon, une fois créé, ne doit pas pouvoir être modifié. <br><br>
+            Dans la classe Point, ajouter les méthodes getX et getY qui permettent de lire les attributs x et y. <br><br>
+            Dans la classe Polygon, ajoutez la méthode getPoints, qui retourne les sommets du Polygon sous forme de Point. <br><br>
+            Les constantes ORIGIN, ORIGIN_SQUARE et ORIGIN_TRIANGLE doivent aussi être immuables.
+        </p>
+
+        <script src="main.js" type="module"></script>
+    </body>
+</html>
