@@ -1,0 +1,821 @@
+<section>
+	<br><br><br>
+	<h1>Design patterns</h1>
+	<h2>Patrons de conception</h2>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Introduction</h4>
+	<br>
+	<p>« <i>Un patron de conception (souvent appelé design pattern) est un arrangement caractéristique de modules, reconnu comme bonne pratique en réponse à un problème de conception d'un logiciel. Il décrit une solution standard, utilisable dans la conception de différents logiciels.</i> »<br>— Wikipédia</p>
+	<br><br>
+	<p>En d'autres termes : ce sont des manières classiques et courantes de résoudre des problèmes communs en programmation.</p>
+	<br>
+	<p>Sont ajoutées à cette liste des notions qui ne sont pas des <i>design patterns</i>, mais qui s'intègrent bien à cette partie du cours.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Les familles de patterns</h4>
+	<br>
+	<p>On peut classer les patrons de conception en trois familles :</p>
+	<ul>
+		<li><i>Création</i> : comment créer des objets (Singleton, Builder, Factory, etc.)</li>
+		<li><i>Structure</i> : comment assembler des objets et des classes (Adapter, Decorator, etc.)</li>
+		<li><i>Comportement</i> : comment les objets communiquent et se répartissent les responsabilités (Observer, Strategy, etc.)</li>
+	</ul>
+	<p>D'autres patterns, comme MVC, décrivent l'architecture d'une application entière.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Le programme</h4>
+	<ul>
+		<li>Notions de base : les classes abstraites, les éléments statiques</li>
+		<li>Patterns de création : Singleton, Builder</li>
+		<li>Patterns de structure : Adapter, Decorator</li>
+		<li>Pattern de comportement : Observer</li>
+		<li>Pattern d'architecture : Model - View - Controller (MVC)</li>
+		<li>L'over-engineering</li>
+	</ul>
+	<p>Il en existe beaucoup d'autres, que nous ne verrons pas dans ce cours :</p>
+	<ul>
+		<li><a href="https://refactoring.guru/fr/design-patterns">https://refactoring.guru/fr/design-patterns</a> (en français, avec schémas et exemples)</li>
+		<li><a href="https://en.wikipedia.org/wiki/Software_design_pattern">https://en.wikipedia.org/wiki/Software_design_pattern</a></li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Les classes abstraites</h4>
+	<br>
+	<p>Une classe abstraite est une classe qui ne peut pas être instanciée. <br> Elle ne sera utilisée que comme parent d'une autre classe.</p>
+	<p>Cela permet de définir des ensembles de méthodes communes à plusieurs classes.</p>
+	<br>
+	<p>JavaScript ne possède pas de classes abstraites natives : on les simule en levant une erreur dans le constructeur, à l'aide de <code>this.constructor</code>, qui indique la classe réellement instanciée.</p>
+	<p>D'autres langages, comme TypeScript, Java ou C#, possèdent le mot-clé <code>abstract</code>.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Les classes abstraites</h4>
+	<table>
+		<tr>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Classe abstraite, non instanciable
+					class DataStore {
+						constructor() {
+							if (this.constructor === DataStore) {
+								throw new Error("DataStore is abstract");
+							}
+						}
+
+						// Méthodes abstraites, non implémentées
+						write(key, value) {
+							throw new Error("write is not implemented");
+						}
+						load(key) {
+							throw new Error("load is not implemented");
+						}
+
+						exists(key) {
+							const value = this.load(key);
+							return value !== null && value !== undefined;
+						}
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre class="fragment fade-in" style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					class LocalDataStore extends DataStore {
+						constructor() {
+							super();
+						}
+						write(key, value) { /* écriture locale */ }
+						load(key) { /* lecture locale */ }
+					}
+
+					class DistantDataStore extends DataStore {
+						constructor() {
+							super();
+						}
+						write(key, value) { /* écriture distante */ }
+						load(key) { /* lecture distante */ }
+					}
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Les classes abstraites</h4>
+	<br>
+	<p>À utiliser quand :</p>
+	<ul>
+		<li>Plusieurs classes ont un ensemble commun de méthodes groupables</li>
+		<li>Cet ensemble n'est pas suffisant pour créer un objet complet</li>
+	</ul>
+	<br>
+	<p>À ne pas utiliser quand :</p>
+	<ul>
+		<li>On pourrait avoir une classe parent non abstraite</li>
+		<li>Grouper les méthodes communes ne forme pas une classe cohérente</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Les éléments statiques</h4>
+	<br>
+	<p>Parfois, il est utile de placer des valeurs ou des fonctions dans des objets, sans qu'elles soient liées à une instance.<br> C'est le cas de <code>Math</code> :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const area = Math.PI * 3 * 3;
+		const cosinus = Math.cos(12);
+		const absolute = Math.abs(-45);
+		const eulerNumber = Math.E;
+	</code></pre>
+	<p><code>Math</code> n'est jamais instancié. À aucun moment on ne fait <code>const value = new Math();</code></p>
+	<p>Tous les éléments de <code>Math</code> sont dits <i>statiques</i>. Les éléments statiques sont simplement « rangés » dans une classe.</p>
+	<aside class="notes">
+		Techniquement, Math n'est pas une classe mais un objet global : new Math() provoque d'ailleurs une erreur. Il se comporte cependant exactement comme une classe ne contenant que des éléments statiques.
+	</aside>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Les éléments statiques</h4>
+	<br>
+	<p>Les éléments statiques sont indiqués par le mot-clé <code>static</code>.</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		class MyMath {
+			static PI = 3.141592653589793;
+			static E = 2.718281828459045;
+
+			static add(a, b) {
+				return a + b;
+			}
+
+			static square(x) {
+				return x * x;
+			}
+		}
+
+		console.log(MyMath.PI);        // 3.141592653589793
+		console.log(MyMath.add(3, 5)); // 8
+	</code></pre>
+	<p>
+		On peut également empêcher l'instanciation de la même manière que pour une classe abstraite.<br>
+		Il est possible de combiner éléments statiques et non statiques dans une même classe.
+	</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Les éléments statiques</h4>
+	<br>
+	<p>En JavaScript moderne, une classe ne contenant que des éléments statiques peut souvent être remplacée par un module :</p>
+	<table>
+		<tr>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Fichier myMath.js
+					export const PI = 3.141592653589793;
+					export const E = 2.718281828459045;
+
+					export function add(a, b) {
+						return a + b;
+					}
+
+					export function square(x) {
+						return x * x;
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Fichier main.js
+					import * as MyMath from './myMath.js';
+
+					console.log(MyMath.PI);        // 3.141592653589793
+					console.log(MyMath.add(3, 5)); // 8
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+	<p>Le module joue le rôle d'espace de noms (<i>namespace</i>), sans avoir besoin de créer de classe.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Les éléments statiques</h4>
+	<br>
+	<br>
+	<p>À utiliser quand :</p>
+	<ul>
+		<li>On a besoin de grouper des fonctions / valeurs</li>
+		<li>On a un attribut ou une méthode d'une classe ne nécessitant pas d'instance de la classe<br>
+			<i>Par exemple : constantes, opérations n'utilisant aucun attribut, etc.</i>
+		</li>
+	</ul>
+	<br>
+	<p>À ne pas utiliser quand :</p>
+	<ul>
+		<li>Une valeur statique peut changer, il faut alors en faire un attribut</li>
+		<li>Une fonction statique utilise des attributs, il faut alors en faire une méthode</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Singleton</h4>
+	<br>
+	<p>Un <i>Singleton</i> est un objet ne pouvant être instancié qu'une seule fois.<br> Il est global à toute l'exécution du programme.</p>
+	<p>Tenter de créer un deuxième objet peut soit lever une erreur, soit retourner le même objet global.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Singleton</h4>
+	<table>
+		<tr>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					class ConfigManager {
+						constructor() {
+							if (ConfigManager.instance) {
+								return ConfigManager.instance;
+							}
+
+							this.config = {};
+							ConfigManager.instance = this;
+						}
+
+						set(key, value) {
+							this.config[key] = value;
+						}
+
+						get(key) {
+							return this.config[key];
+						}
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Dans un module A
+					const configA = new ConfigManager();
+					configA.set("fontSize", 10);
+				</code></pre>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Dans un module B
+					// ConfigManager est un Singleton, il n'en existe qu'un
+					const configB = new ConfigManager();
+					console.log(configB.get("fontSize")); // 10
+				</code></pre>
+				<p>Il existe plusieurs implémentations possibles. On pourrait aussi utiliser une fonction statique <code>ConfigManager.getInstance()</code> pour obtenir l'objet.</p>
+			</td>
+		</tr>
+	</table>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Singleton</h4>
+	<br>
+	<p>En JavaScript, la manière la plus simple de créer un Singleton est d'exporter une instance depuis un module :</p>
+	<table>
+		<tr>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Fichier config.js
+					class ConfigManager {
+						constructor() {
+							this.config = {};
+						}
+						set(key, value) {
+							this.config[key] = value;
+						}
+						get(key) {
+							return this.config[key];
+						}
+					}
+
+					export const config = new ConfigManager();
+				</code></pre>
+			</td>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Dans un module A
+					import { config } from './config.js';
+					config.set("fontSize", 10);
+				</code></pre>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Dans un module B
+					import { config } from './config.js';
+					console.log(config.get("fontSize")); // 10
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+	<p>Un module n'est exécuté qu'une seule fois : tous les modules qui l'importent reçoivent le même objet.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Singleton</h4>
+	<br>
+	<br>
+	<p>À utiliser quand :</p>
+	<ul>
+		<li>On a besoin d'un objet unique et partagé partout dans notre programme</li>
+		<li>Cela n'a aucun sens d'avoir plusieurs objets de ce type</li>
+	</ul>
+	<br>
+	<p>À ne pas utiliser quand :</p>
+	<ul>
+		<li>On souhaite créer une valeur globale, facilement accessible. C'est souvent une fausse bonne idée.</li>
+		<li>On pourrait avoir besoin de plusieurs instances de la classe</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Singleton</h4>
+	<br>
+	<p class="warning">Attention : le Singleton est un pattern souvent critiqué, dont il est facile d'abuser.<br> On a tendance à l'utiliser pour se simplifier la vie, alors qu'il crée de nombreux effets de bord !</p>
+	<br>
+	<p>Les principaux problèmes :</p>
+	<ul>
+		<li><i>État global caché</i> : n'importe quelle partie du code peut modifier le Singleton. Quand une valeur est fausse, il est difficile de savoir qui l'a modifiée.</li>
+		<li><i>Dépendances invisibles</i> : une fonction qui utilise un Singleton ne le reçoit pas en paramètre. On ne voit pas, en lisant sa signature, de quoi elle dépend.</li>
+		<li><i>Tests difficiles</i> : l'état du Singleton persiste d'un test à l'autre, et il est difficile de le remplacer par un faux objet pour les tests.</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Builder</h4>
+	<br>
+	<p>Certains objets peuvent devenir complexes à construire, avec des constructeurs possédant beaucoup de paramètres. <br>
+		Dans d'autres cas, il est difficile de construire un objet en une fois, à un seul endroit dans le code.
+	</p>
+	<p>Le pattern <i>Builder</i> vise à construire un objet final en plusieurs étapes.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Builder</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		// Classe décrivant une requête SQL
+		class Query {
+			constructor(select, from, where, order) {
+				this.select = select;
+				this.from = from;
+				this.where = where;
+				this.order = order;
+			}
+
+			toString() {
+				return `SELECT ${this.select} FROM ${this.from} `
+					+ `WHERE ${this.where} ORDER BY ${this.order}`;
+			}
+		}
+	</code></pre>
+	<p class="warning">Cet exemple sert uniquement à illustrer le pattern. Construire du SQL en concaténant des chaînes expose aux injections SQL : en pratique, on utilise des requêtes paramétrées.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Builder</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		class QueryBuilder {
+			setSelect(fields) {
+				this.select = fields;
+				return this;
+			}
+			setFrom(table) {
+				this.from = table;
+				return this;
+			}
+			setWhere(cond) {
+				this.where = cond;
+				return this;
+			}
+			setOrderBy(field) {
+				this.orderBy = field;
+				return this;
+			}
+
+			build() {
+				return new Query(this.select, this.from, this.where, this.orderBy);
+			}
+		}
+	</code></pre>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Builder</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const query = new QueryBuilder()
+			.setSelect("*")
+			.setFrom("users")
+			.setWhere("age > 18")
+			.setOrderBy("name")
+			.build();
+
+		console.log(query.toString());
+	</code></pre>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Builder</h4>
+	<p>Le Builder peut aussi être rempli progressivement, à différents endroits du code (par exemple au fil des choix de l'utilisateur dans un formulaire de recherche), puis construit une seule fois à la fin :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const qBuilder = new QueryBuilder();
+		/* ... */
+		qBuilder.setSelect("*");
+		/* ... */
+		qBuilder.setFrom("users");
+		/* ... */
+		qBuilder.setWhere("age > 18");
+		/* ... */
+		qBuilder.setOrderBy("name");
+		/* ... */
+		const query = qBuilder.build();
+		console.log(query.toString());
+	</code></pre>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Builder</h4>
+	<br>
+	<p>Que se passe-t-il si on oublie une étape ?</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const query = new QueryBuilder()
+			.setFrom("users")
+			.build();
+
+		console.log(query.toString());
+		// SELECT undefined FROM users WHERE undefined ORDER BY undefined
+	</code></pre>
+	<p>La requête produite est invalide !</p>
+	<p>Un bon Builder doit gérer les étapes optionnelles, et vérifier que l'objet est valide avant de le construire.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Builder</h4>
+	<table>
+		<tr>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					class QueryBuilder {
+						constructor() {
+							this.select = "*"; // Valeur par défaut
+						}
+
+						/* ... setters ... */
+
+						build() {
+							// Validation : FROM est obligatoire
+							if (!this.from) {
+								throw new Error("FROM is missing");
+							}
+							return new Query(this.select, this.from,
+								this.where, this.orderBy);
+						}
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					class Query {
+						/* ... constructeur ... */
+
+						toString() {
+							let sql = `SELECT ${this.select} FROM ${this.from}`;
+							// Clauses optionnelles
+							if (this.where) {
+								sql += ` WHERE ${this.where}`;
+							}
+							if (this.order) {
+								sql += ` ORDER BY ${this.order}`;
+							}
+							return sql;
+						}
+					}
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+	<p>Désormais, <code>new QueryBuilder().setFrom("users").build()</code> produit <code>SELECT * FROM users</code>.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Builder</h4>
+	<br>
+	<br>
+	<p>À utiliser quand :</p>
+	<ul>
+		<li>Un objet doit être construit en plusieurs étapes</li>
+		<li>La construction d'un objet en une ligne devient trop complexe</li>
+	</ul>
+	<br>
+	<p>À ne pas utiliser quand :</p>
+	<ul>
+		<li>On pourrait simplifier autrement la construction de l'objet. Le pattern <i>Builder</i> apporte beaucoup de complexité</li>
+		<li>Il y a trop de risques que le <i>Builder</i> se trouve dans des états invalides</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Adapter</h4>
+	<br>
+	<p>Un <i>Adapter</i> permet de transformer l'interface d'une classe pour qu'elle « s'adapte » à un besoin donné.</p>
+	<p>Exemple : notre application affiche des couches à partir d'objets qui possèdent une méthode <code>readGeoJSON()</code>.</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		// Le code client attend un objet possédant une méthode readGeoJSON()
+		function displayLayer(reader) {
+			const geojson = reader.readGeoJSON();
+			/* ... affichage sur la carte ... */
+		}
+
+		class GeoJSONReader {
+			constructor(filePath) {
+				this.filePath = filePath;
+			}
+
+			readGeoJSON() { /* Lit le fichier GeoJSON */ }
+		}
+	</code></pre>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Adapter</h4>
+	<br>
+	<p>Une librairie nous fournit une classe <code>KMLReader</code>, que nous ne pouvons pas modifier. Elle ne possède pas de méthode <code>readGeoJSON()</code>.</p>
+	<table>
+		<tr>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// Classe issue d'une librairie,
+					// non modifiable
+					class KMLReader {
+						constructor(filePath) {
+							this.filePath = filePath;
+						}
+
+						readKML() { /* Lit le fichier */ }
+					}
+				</code></pre>
+			</td>
+			<td>
+				<pre style="font-size: 0.46em;"><code data-trim data-noescape class="language-javascript">
+					// L'Adapter expose l'interface
+					// attendue par le code client
+					class GeoJSONAdapter {
+						constructor(kmlReader) {
+							this.kmlReader = kmlReader;
+						}
+
+						readGeoJSON() {
+							const kml = this.kmlReader.readKML();
+							/* ... conversion en GeoJSON ... */
+						}
+					}
+				</code></pre>
+			</td>
+		</tr>
+	</table>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Adapter</h4>
+	<br>
+	<p>Le code client peut maintenant utiliser les deux sources de la même manière :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		displayLayer(new GeoJSONReader("communes.geojson"));
+		displayLayer(new GeoJSONAdapter(new KMLReader("map.kml")));
+	</code></pre>
+	<p><code>displayLayer()</code> n'a pas besoin de savoir que les données proviennent d'un fichier KML.</p>
+	<br>
+	<p>On retrouve cette idée dans OpenLayers : les classes du module <code>ol/format</code> (<code>GeoJSON</code>, <code>KML</code>, <code>GPX</code>, etc.) exposent toutes la même méthode <code>readFeatures()</code>, quel que soit le format lu.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Adapter</h4>
+	<br>
+	<br>
+	<p>À utiliser quand :</p>
+	<ul>
+		<li>Une classe de base doit être modifiée, mais il n'est pas possible de le faire (par exemple, si elle est issue d'une librairie)</li>
+		<li>L'héritage n'est pas une bonne solution</li>
+	</ul>
+	<br>
+	<p>À ne pas utiliser quand :</p>
+	<ul>
+		<li>Modifier la classe de base est possible / acceptable</li>
+		<li>L'héritage pourrait être utilisé à la place</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Decorator</h4>
+	<br>
+	<p>Un <i>Decorator</i> enveloppe un objet pour lui ajouter un comportement, tout en exposant <b>la même interface</b> que l'objet décoré.</p>
+	<p>Comme le décorateur a la même interface que l'objet qu'il enveloppe, il peut lui-même être décoré : on peut empiler plusieurs décorateurs.</p>
+	<p>Dans l'exemple suivant, tous les objets possèdent une méthode <code>render()</code>.</p>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Decorator</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		class Text {
+			constructor(content) { this.content = content; }
+			render() { return this.content; }
+		}
+
+		class Bold {
+			constructor(text) { this.text = text; }
+			render() { return `&lt;b&gt;${this.text.render()}&lt;/b&gt;`; }
+		}
+		class Italic {
+			constructor(text) { this.text = text; }
+			render() { return `&lt;i&gt;${this.text.render()}&lt;/i&gt;`; }
+		}
+		class Underline {
+			constructor(text) { this.text = text; }
+			render() { return `&lt;u&gt;${this.text.render()}&lt;/u&gt;`; }
+		}
+
+		const text = new Text("Hello world");
+		const formatted = new Underline(new Bold(new Italic(text)));
+		console.log(formatted.render()); // &lt;u&gt;&lt;b&gt;&lt;i&gt;Hello world&lt;/i&gt;&lt;/b&gt;&lt;/u&gt;
+	</code></pre>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Decorator</h4>
+	<br>
+	<br>
+	<p>À utiliser quand :</p>
+	<ul>
+		<li>On veut ajouter une ou plusieurs « surcouches » à un objet donné, en conservant son interface</li>
+		<li>Modifier la classe de base est impossible ou peu pratique</li>
+	</ul>
+	<br>
+	<p>À ne pas utiliser quand :</p>
+	<ul>
+		<li>On veut ajouter de nouvelles méthodes à un objet : un <i>Decorator</i> ne change pas l'interface. Il faut alors utiliser l'héritage, ou un autre pattern.</li>
+		<li>Les couches de décorateurs deviennent trop nombreuses, rendant le code difficile à suivre et à déboguer</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Observer</h4>
+	<br>
+	<p>Un objet (le <i>sujet</i>) maintient une liste d'abonnés (les <i>observers</i>), et les notifie automatiquement lorsqu'un événement se produit.</p>
+	<p>Le sujet n'a pas besoin de connaître ses abonnés : il se contente de les prévenir.</p>
+	<br>
+	<p>Vous utilisez déjà ce pattern :</p>
+	<ul>
+		<li>Dans le navigateur : <code>button.addEventListener('click', callback)</code></li>
+		<li>Dans OpenLayers : <code>map.on('click', callback)</code></li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Observer</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		class EventEmitter {
+			constructor() {
+				this.listeners = {}; // Liste des abonnés, par type d'événement
+			}
+
+			// Abonne une fonction à un événement
+			on(event, callback) {
+				if (!this.listeners[event]) {
+					this.listeners[event] = [];
+				}
+				this.listeners[event].push(callback);
+			}
+
+			// Notifie tous les abonnés d'un événement
+			emit(event, data) {
+				for (const callback of this.listeners[event] || []) {
+					callback(data);
+				}
+			}
+		}
+	</code></pre>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Observer</h4>
+	<pre><code data-trim data-noescape class="language-javascript">
+		class Sensor extends EventEmitter {
+			setValue(value) {
+				this.value = value;
+				this.emit("change", value); // Prévient tous les abonnés
+			}
+		}
+
+		const temperature = new Sensor();
+
+		// Deux abonnés indépendants, qui ne se connaissent pas
+		temperature.on("change", (value) => console.log("Température :", value));
+		temperature.on("change", (value) => {
+			if (value > 30) {
+				console.log("Alerte canicule !");
+			}
+		});
+
+		temperature.setValue(35);
+		// Température : 35
+		// Alerte canicule !
+	</code></pre>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Observer</h4>
+	<br>
+	<br>
+	<p>À utiliser quand :</p>
+	<ul>
+		<li>Plusieurs parties du code doivent réagir à un même changement ou événement</li>
+		<li>L'objet qui émet l'événement ne doit pas dépendre de ceux qui y réagissent</li>
+	</ul>
+	<br>
+	<p>À ne pas utiliser quand :</p>
+	<ul>
+		<li>Il n'y a qu'un seul destinataire, connu à l'avance : un simple appel de fonction est plus clair</li>
+		<li>Les notifications s'enchaînent en cascade : l'ordre d'exécution devient difficile à suivre</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Model - View - Controller (MVC)</h4>
+	<br>
+	<p><i>Tiré de Wikipédia :</i></p>
+	<p>
+		Modèle-vue-contrôleur ou MVC est un motif d'architecture logicielle destiné aux interfaces graphiques, lancé en 1978 et très populaire pour les applications web. Le motif est composé de trois types de modules ayant trois responsabilités différentes : les modèles, les vues et les contrôleurs.
+	</p>
+	<ul>
+		<li>Un modèle (Model) contient les données à afficher</li>
+		<li>Une vue (View) contient la présentation de l'interface graphique</li>
+		<li>Un contrôleur (Controller) contient la logique concernant les actions effectuées par l'utilisateur</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Model - View - Controller (MVC)</h4>
+	<br>
+	<img src="assets/MVC.png" alt="Schéma du pattern MVC">
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>Model - View - Controller (MVC)</h4>
+	<br>
+	<ul>
+		<li>Le MVC peut être implémenté de nombreuses manières</li>
+		<li>Il convient particulièrement bien aux applications web, avec frontend et backend</li>
+		<li>De nombreux frameworks utilisent les principes du MVC : Ruby on Rails, Django, etc.</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Patrons de conception</h3>
+	<h4>L'over-engineering</h4>
+	<br>
+	<p>Quand faut-il utiliser des patrons de conception ? <br> Comment les utiliser efficacement ?</p>
+	<div class="fragment fade-in">
+		<p>La réponse est simple : K.I.S.S. (<i>Keep It Simple, Stupid</i>) <br> Autrement dit : seulement si cela rend le code plus clair et plus facile à comprendre.</p>
+		<p>Et Y.A.G.N.I. (<i>You Aren't Gonna Need It</i>) : n'ajoutez pas de pattern « au cas où » pour un besoin futur hypothétique.</p>
+		<p>Une erreur classique est la surutilisation de patterns : ce n'est pas parce qu'ils existent qu'il faut les utiliser. Ce ne sont que des outils pour atteindre un code de qualité, pas des garanties !</p>
+		<p>Voir par exemple le dépôt satirique <a href="https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition">https://github.com/EnterpriseQualityCoding/FizzBuzzEnterpriseEdition</a><br>
+			Ce programme effectue un calcul très simple, mais noyé dans un code chaotique.
+		</p>
+	</div>
+</section>

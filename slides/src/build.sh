@@ -9,4 +9,10 @@
 #(cd ./reveal_js/ ; npm x -c 'decktape -s 1920x1080 reveal "http://127.0.0.1:8080?showNotes=true&file=01_05_js_scopes.html" ../../01_05_js_scopes.pdf')
 #(cd ./reveal_js/ ; npm x -c 'decktape -s 1920x1080 reveal "http://127.0.0.1:8080?showNotes=true&file=01_06_js_proxy.html" ../../01_06_js_proxy.pdf')
 
-(cd ./reveal_js/ ; npm x -c 'decktape -s 1920x1080 reveal "http://127.0.0.1:8080?showNotes=true&file=02_00_code.html" ../../02_00_code.pdf')
+#(cd ./reveal_js/ ; npm x -c 'decktape -s 1920x1080 reveal "http://127.0.0.1:8080?showNotes=true&file=02_00_code.html" ../../02_00_code.pdf')
+
+(cd ./reveal_js/ ; npm x -c 'decktape -s 1920x1080 reveal "http://127.0.0.1:8080?showNotes=true&file=03_00_design_patterns.html" ../../03_00_design_patterns.pdf')
+
+(cd ./reveal_js/ ; npm x -c 'decktape -s 1920x1080 reveal "http://127.0.0.1:8080?showNotes=true&file=04_00_node_vite.html" ../../04_00_node_vite.pdf')
+
+(cd ./reveal_js/ ; npm x -c 'decktape -s 1920x1080 reveal "http://127.0.0.1:8080?showNotes=true&file=04_01_openlayers.html" ../../04_01_openlayers.pdf')

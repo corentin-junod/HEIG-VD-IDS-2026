@@ -1,0 +1,444 @@
+<section>
+	<br><br><br>
+	<h1>Webmapping</h1>
+	<h2>OpenLayers</h2>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Deux librairies principales pour du webmapping 2D open source :</p>
+	<table>
+		<tr>
+			<td style="width:50%;background-color:white;"><img src="assets/leaflet.png" alt="Leaflet" width="200px"></td>
+			<td style="width:50%;background-color:white;"><img src="assets/ol.svg" alt="OpenLayers" height="70px" width="200px"></td>
+		</tr>
+		<tr>
+			<td>Simple, mais extensible par des plugins</td>
+			<td>Beaucoup de fonctionnalités de base + plugins</td>
+		</tr>
+		<tr>
+			<td>Grande communauté, beaucoup d'exemples</td>
+			<td>Très à jour sur les nouveaux standards</td>
+		</tr>
+		<tr>
+			<td>Projection suisse peu supportée</td>
+			<td>Très présente sur le marché suisse</td>
+		</tr>
+	</table>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>OpenLayers est très populaire en Suisse mais aussi ailleurs dans le monde, il sert de base à de nombreux géoportails :</p>
+	<ul>
+		<li>GeoAdmin : <a href="https://map.geo.admin.ch">https://map.geo.admin.ch</a></li>
+		<li>SuisseMobile : <a href="https://map.wanderland.ch">https://map.wanderland.ch</a></li>
+		<li>Luxembourg : <a href="https://map.geoportail.lu">https://map.geoportail.lu</a></li>
+		<li>EPFL : <a href="https://plan.epfl.ch">https://plan.epfl.ch</a></li>
+		<li>SITN : <a href="https://sitn.ne.ch">https://sitn.ne.ch</a></li>
+		<li>Transports publics en temps réel : <a href="https://tracker.geops.ch">https://tracker.geops.ch</a></li>
+		<li>Saint-Pierre de la Réunion : <a href="https://geo.saintpierre.re">https://geo.saintpierre.re</a></li>
+		<li>Région de Nyon : <a href="https://map.cartolacote.ch">https://map.cartolacote.ch</a></li>
+	</ul>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>OpenLayers est très bien documenté :</p>
+	<ul>
+		<li>Site officiel : <a href="https://openlayers.org/">https://openlayers.org/</a></li>
+		<li>Quickstart : <a href="https://openlayers.org/doc/quickstart.html">https://openlayers.org/doc/quickstart.html</a></li>
+		<li>API complète : <a href="https://openlayers.org/en/latest/apidoc/">https://openlayers.org/en/latest/apidoc/</a></li>
+		<li>La longue liste d'exemples : <a href="https://openlayers.org/en/latest/examples/">https://openlayers.org/en/latest/examples/</a></li>
+	</ul>
+	<p>Nous allons voir les bases d'OpenLayers, mais il est attendu que vous appreniez à utiliser ces ressources.</p>
+	<p>Les exemples sont le meilleur moyen d'apprendre rapidement, OpenLayers en contient un vaste catalogue.</p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Installation</p>
+	<p>OpenLayers est distribué comme paquet npm. Dans un projet Vite existant :</p>
+	<pre><code data-trim data-noescape class="language-bash">
+		npm install ol
+		npm install proj4    # Nécessaire pour la projection suisse, voir plus loin
+	</code></pre>
+	<p>OpenLayers fournit aussi un modèle de projet prêt à l'emploi, basé sur Vite :</p>
+	<pre><code data-trim data-noescape class="language-bash">
+		npx create-ol-app monProjet
+		cd monProjet
+		npm start
+	</code></pre>
+	<p>Ce modèle contient déjà les fichiers <i>index.html</i>, <i>main.js</i> et <i>style.css</i> présentés dans les slides suivantes.</p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<p>Comment ça marche ?</p>
+	<pre><code data-trim data-noescape class="language-html">
+		&lt;!DOCTYPE html&gt;
+		&lt;html lang="en"&gt;
+		&lt;head&gt;
+			&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+			&lt;title&gt;Quick Start&lt;/title&gt;
+		&lt;/head&gt;
+		&lt;body&gt;
+			&lt;div id="map"&gt;&lt;/div&gt;
+			&lt;script type="module" src="./main.js"&gt;&lt;/script&gt;
+		&lt;/body&gt;
+		&lt;/html&gt;
+	</code></pre>
+	<p>
+		OpenLayers a besoin d'un <code>&lt;div&gt;</code> dans lequel sera placée la carte, il a ici l'id <code>map</code>.
+		<br>
+		Le script principal est ensuite inclus, comme dans un projet Vite de base.
+	</p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Le CSS</p>
+	<p>OpenLayers fournit sa propre feuille de style, nécessaire au bon affichage des contrôles (zoom, attribution, etc.) :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		// main.js
+		import 'ol/ol.css';
+		import './style.css';
+	</code></pre>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Le CSS</p>
+	<p>Le <code>&lt;div&gt;</code> de la carte doit avoir une hauteur :</p>
+	<pre><code data-trim data-noescape class="language-css">
+		/* style.css */
+		html, body {
+			margin: 0;
+			height: 100%;
+		}
+		#map {
+			width: 100%;
+			height: 100%;
+		}
+	</code></pre>
+	<p class="warning">Sans hauteur définie, le <code>&lt;div&gt;</code> mesure 0 pixel de haut : la carte est bien créée, mais invisible !</p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<p>La Map</p>
+	<p>C'est l'objet de base, il représente la carte affichée à l'écran.</p>
+	<p>Propriétés :</p>
+	<ul>
+		<li><code>target</code> : id de l'élément dans lequel créer la <code>Map</code></li>
+		<li><code>view</code> : objet <code>View</code> qui décrit la vue à afficher dans la carte</li>
+		<li><code>layers</code> : tableau d'objets <code>Layer</code> qui décrivent les couches présentes sur la carte</li>
+	</ul>
+	<p>Propriétés facultatives :</p>
+	<ul>
+		<li><code>controls</code> : tableau d'objets <code>Control</code>, éléments d'interface affichés sur la carte (zoom, rotation, plein écran, etc.)</li>
+		<li><code>interactions</code> : tableau d'actions auxquelles la carte doit réagir (clic, double-clic, glisser-déposer, etc.)</li>
+	</ul>
+	<br>
+	<p>D'autres propriétés existent, voir <a href="https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html">https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html</a></p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<p>La Map</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		import 'ol/ol.css';
+		import './style.css';
+		import Map from 'ol/Map.js';
+
+		const map = new Map({
+			target: 'map',          // 'target' est l'id du div à utiliser comme carte
+			view: /* À venir */,
+			layers: /* À venir */
+		});
+	</code></pre>
+
+	<p>Dans OpenLayers, les paramètres sont toujours passés à l'aide d'un objet. On écrira :</p>
+
+	<pre><code data-trim data-noescape class="language-javascript">
+		new Map({target: 'map', view: undefined, layers: undefined});
+	</code></pre>
+
+	<p>Et non pas :</p>
+
+	<pre><code data-trim data-noescape class="language-javascript">
+		new Map('map', undefined, undefined);
+	</code></pre>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>La View</p>
+	<p>Objet qui décrit la résolution, la rotation, la position, la projection, etc. de la <code>Map</code></p>
+	<p>Propriétés :</p>
+	<ul>
+		<li><code>center</code> : tableau contenant les coordonnées du centre de la carte</li>
+		<li><code>zoom</code> : nombre décrivant le niveau de zoom</li>
+	</ul>
+	<p>Autres propriétés :</p>
+	<ul>
+		<li><code>resolution</code> : alternative à <code>zoom</code>, qui décrit la résolution de la carte</li>
+		<li><code>projection</code> : la projection de la vue</li>
+	</ul>
+	<br>
+	<p>D'autres propriétés existent, voir <a href="https://openlayers.org/en/latest/apidoc/module-ol_View-View.html">https://openlayers.org/en/latest/apidoc/module-ol_View-View.html</a></p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>La View</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		import 'ol/ol.css';
+		import './style.css';
+		import Map from 'ol/Map.js';
+		import View from 'ol/View.js';
+
+		const map = new Map({
+			target: 'map',
+			view: new View({        // La View indique comment la Map doit être affichée
+				center: [0, 0],     // Ici centrée en (0, 0)
+				zoom: 2,            // Et avec un zoom à 2
+			}),
+			layers: /* À venir */
+		});
+	</code></pre>
+	<br>
+	<p>On remarque que <code>Map</code> et <code>View</code> prennent en paramètre un objet qui contient toutes les valeurs des paramètres.</p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Les Layers</p>
+	<p>
+		Il existe plusieurs types de layers (module <code>ol/layer</code>), mais ils peuvent être divisés en 2 catégories :
+	</p>
+	<ol>
+		<li>Raster (par ex. : <code>TileLayer</code>, <code>ImageLayer</code>)</li>
+		<li>Vectoriel (par ex. : <code>VectorLayer</code>, <code>VectorTileLayer</code>)</li>
+	</ol>
+	<p>
+		La <code>source</code> de la donnée (module <code>ol/source</code>) est une propriété d'un <code>layer</code> et existe aussi en 2 catégories :
+	</p>
+	<ol>
+		<li>Raster (par ex. : <code>TileSource</code>, <code>ImageSource</code>)</li>
+		<li>Vectoriel (par ex. : <code>VectorSource</code>, <code>VectorTileSource</code>)</li>
+	</ol>
+	<p>Un exemple de <code>TileSource</code> est un objet <code>OSM</code> qui indique une couche OpenStreetMap.</p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Code complet de <i>main.js</i></p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		import 'ol/ol.css';
+		import './style.css';
+		import Map from 'ol/Map.js';
+		import OSM from 'ol/source/OSM.js';
+		import TileLayer from 'ol/layer/Tile.js';
+		import View from 'ol/View.js';
+
+		const map = new Map({
+			target: 'map',
+			view: new View({
+				center: [0, 0],
+				zoom: 2,
+			}),
+			layers: [               // Liste des layers à afficher
+				new TileLayer({     // Dans ce cas, il y a un layer tuilé, OpenStreetMap (OSM)
+					source: new OSM(),
+				}),
+			],
+		});
+	</code></pre>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Les contrôles</p>
+	<p>
+		Les contrôles sont des éléments permettant de manipuler la carte ou d'afficher une information.<br>
+		Par défaut, <code>Map</code> en charge trois :
+	</p>
+	<ul>
+		<li><code>Zoom</code> : permet de zoomer sur la carte</li>
+		<li><code>Rotate</code> : orientation (apparaît dès que la carte est tournée)</li>
+		<li><code>Attribution</code> : copyright des données</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Les contrôles</p>
+	<p>Il en existe d'autres :</p>
+	<ul>
+		<li>Barre d'échelle : <code>ScaleLine</code></li>
+		<li>Carte d'aperçu : <code>OverviewMap</code></li>
+		<li>Position du curseur : <code>MousePosition</code></li>
+		<li>Plein écran : <code>FullScreen</code></li>
+		<li>Zoom sur l'étendue max : <code>ZoomToExtent</code></li>
+		<li>Curseur de zoom : <code>ZoomSlider</code></li>
+	</ul>
+	<p>Exemples : <a href="https://openlayers.org/en/latest/examples/?q=control">https://openlayers.org/en/latest/examples/?q=control</a></p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<p>Les événements</p>
+	<p>La <code>Map</code> émet des événements auxquels on peut réagir avec la méthode <code>on()</code> :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		// Clic sur la carte
+		map.on('click', (event) => {
+			console.log('Clic en', event.coordinate); // Dans la projection de la View
+		});
+
+		// Déplacement de la souris : affiche les coordonnées dans un &lt;div id="position"&gt;
+		map.on('pointermove', (event) => {
+			document.getElementById('position').textContent = event.coordinate.join(', ');
+		});
+
+		// Fin d'un déplacement ou d'un zoom de la carte
+		map.on('moveend', () => {
+			console.log('Nouveau zoom :', map.getView().getZoom());
+		});
+	</code></pre>
+	<p>Liste des événements : voir la section <i>Fires</i> de <a href="https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html">https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html</a></p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>La projection suisse EPSG:2056</p>
+	<p>Par défaut, OpenLayers ne connaît pas la projection suisse. Il faut la lui définir.</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		import proj4 from 'proj4';
+		import { register } from 'ol/proj/proj4.js';
+		import { get as getProjection } from 'ol/proj.js';
+
+		proj4.defs(
+			'EPSG:2056',
+			'+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 +k_0=1 +x_0=2600000' +
+			' +y_0=1200000 +ellps=bessel +towgs84=674.374,15.056,405.346,0,0,0,0 +units=m +no_defs',
+		);
+		register(proj4);
+		// Étendue de validité de la projection (la Suisse)
+		getProjection('EPSG:2056').setExtent([2420000, 1030000, 2900000, 1350000]);
+	</code></pre>
+	<p>Ces lignes sont à ajouter au début de votre script, avant tout appel à OpenLayers.</p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>La projection suisse EPSG:2056</p>
+	<p>Une fois définie, la projection peut être utilisée dans la <code>View</code> :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const map = new Map({
+			target: 'map',
+			view: new View({
+				projection: 'EPSG:2056',       // La View utilise maintenant la projection suisse
+				center: [2561000, 1204500],    // Les coordonnées sont en mètres MN95 (ici Neuchâtel)
+				zoom: 5,
+			}),
+			layers: [ /* ... */ ],
+		});
+	</code></pre>
+	<p>Toutes les coordonnées manipulées par la carte (centre, clics, etc.) sont alors exprimées en EPSG:2056.</p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Un fond de carte suisse : la carte nationale de swisstopo</p>
+	<p>En EPSG:2056, les tuiles swisstopo suivent une grille qui leur est propre, qu'il faut décrire à OpenLayers :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		import TileGrid from 'ol/tilegrid/TileGrid.js';
+
+		// Résolutions (mètres par pixel) des tuiles swisstopo en EPSG:2056
+		const resolutions = [4000, 3750, 3500, 3250, 3000, 2750, 2500,
+			2250, 2000, 1750, 1500, 1250, 1000, 750, 650, 500, 250,
+			100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25];
+
+		const tileGrid = new TileGrid({
+			origin: [2420000, 1350000],   // Coin supérieur gauche de la grille de tuiles
+			resolutions: resolutions,
+		});
+	</code></pre>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Un fond de carte suisse : la carte nationale de swisstopo</p>
+	<p>La couche utilise ensuite cette grille pour charger les tuiles :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		import XYZ from 'ol/source/XYZ.js';
+
+		const swisstopo = new TileLayer({
+			source: new XYZ({
+				url: 'https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe'
+					+ '/default/current/2056/{z}/{x}/{y}.jpeg',
+				projection: 'EPSG:2056',
+				tileGrid: tileGrid,
+				attributions: '© swisstopo',
+			}),
+		});
+	</code></pre>
+	<p>Documentation et autres couches disponibles : <a href="https://docs.geo.admin.ch/visualize-data/wmts.html">https://docs.geo.admin.ch/visualize-data/wmts.html</a></p>
+</section>
+
+<section>
+	<h3>Webmapping</h3>
+	<h4>OpenLayers</h4>
+	<br>
+	<p>Un fond de carte suisse : la carte nationale de swisstopo</p>
+	<p>Enfin, la couche est ajoutée à la carte :</p>
+	<pre><code data-trim data-noescape class="language-javascript">
+		const map = new Map({
+			target: 'map',
+			view: new View({
+				projection: 'EPSG:2056',
+				resolutions: resolutions,      // Mêmes résolutions que les tuiles : affichage net
+				center: [2561000, 1204500],
+				zoom: 18,                      // Résolution n°18 : 50 m/pixel
+			}),
+			layers: [swisstopo],
+		});
+	</code></pre>
+</section>

@@ -1,0 +1,172 @@
+<section>
+	<br><br><br>
+	<h1>Node.js & Vite</h1>
+	<h2>Développement avancé</h2>
+</section>
+
+<section>
+	<h3>Node.js</h3>
+	<h4>Introduction</h4>
+	<br>
+	<p>Node.js est un environnement d'exécution JavaScript. Comme Python, il vous permet d'exécuter du JavaScript sur votre machine et d'en faire des applications.</p>
+	<p>Node.js permet, entre autres, de faire :</p>
+	<ul>
+		<li>des serveurs web</li>
+		<li>des applications web</li>
+		<li>des applications desktop et en ligne de commande</li>
+		<li>des scripts</li>
+		<li>etc.</li>
+	</ul>
+	<p>De même que Python possède son gestionnaire de paquets <i>pip</i>, Node.js possède <i>npm</i> (<i>Node Package Manager</i>).</p>
+	<aside class="notes">
+		Node.js est donc une application qui interprète du JavaScript et le transforme en instructions pour votre machine.
+
+		Il existe certaines différences entre le JavaScript de Node et celui de votre navigateur. Par exemple, Node ne possède pas de DOM, car le script ne s'exécute pas dans une page web. Node fournit également un ensemble de fonctions permettant d'interagir avec votre système (créer des fichiers, gérer des processus, etc.), ce qui n'aurait pas de sens pour une page web.
+
+		Il existe d'autres environnements d'exécution et d'autres gestionnaires de paquets que Node et npm. Nous utilisons ceux-ci car ce sont les plus répandus et les plus standards. Les alternatives ont souvent des fonctionnalités très similaires.
+	</aside>
+</section>
+
+<section>
+	<h3>Node.js</h3>
+	<h4>Installation</h4>
+	<br>
+	<p>Node.js se télécharge depuis le site officiel : <a href="https://nodejs.org/">https://nodejs.org/</a></p>
+	<ul>
+		<li>Choisissez la version <i>LTS</i> (<i>Long Term Support</i>), stable et maintenue sur le long terme</li>
+		<li><i>npm</i> est installé automatiquement avec Node.js</li>
+	</ul>
+	<p>Pour vérifier l'installation, dans un terminal :</p>
+	<pre><code data-trim data-noescape class="language-bash">
+		node -v   # Affiche la version de Node.js
+		npm -v    # Affiche la version de npm
+	</code></pre>
+	<p>npm fournit aussi la commande <i>npx</i>, qui permet d'exécuter un paquet sans l'installer dans le projet, par ex. <i>npx prettier --write .</i></p>
+	<aside class="notes">
+		Sous Linux, Node.js est aussi disponible dans les gestionnaires de paquets de la distribution, mais la version proposée est parfois ancienne.
+		Des outils comme nvm permettent d'installer et de basculer entre plusieurs versions de Node.js.
+	</aside>
+</section>
+
+<section>
+	<h3>Node.js</h3>
+	<h4>Commandes</h4>
+	<p>Quelques commandes de base, dans le répertoire d'un projet Node.js :</p>
+	<ul>
+		<li><i>npm init</i> : crée un nouveau projet Node.js à partir de zéro</li>
+		<li><i>npm install monPaquet</i> : installe le paquet monPaquet, peut être abrégé <i>npm i monPaquet</i></li>
+		<li><i>npm install</i> : installe toutes les dépendances (paquets) du projet, peut être abrégé <i>npm i</i></li>
+		<li><i>npm run maCommande</i> : exécute la commande maCommande</li>
+		<li><i>npm -h</i> : affiche l'aide des commandes</li>
+	</ul>
+	<p>
+		Contrairement à Python, par défaut, tous les paquets sont installés dans le répertoire du projet. <br>
+		Chaque projet contient donc indépendamment tous ses paquets, ils ne sont pas partagés entre projets.
+	</p>
+</section>
+
+<section>
+	<h3>Node.js</h3>
+	<h4>Structure d'un projet</h4>
+	<p>Un projet Node.js est notamment composé des fichiers / dossiers suivants :</p>
+	<ul>
+		<li><i>package.json</i> : liste les informations principales concernant un projet</li>
+	</ul>
+	<pre><code data-trim data-noescape class="language-json">
+		{
+			"name": "monProjet",    // Nom du projet
+			"type": "module",       // Les fichiers .js utilisent les modules ES (import / export)
+			"scripts": {            // Liste des commandes (actions) disponibles pour le projet
+				"dev": "vite",          // Exécuter "npm run dev" va exécuter la commande "vite"
+				"build": "vite build",
+				"preview": "vite preview"
+			},
+			"dependencies": {       // Liste des dépendances du projet,
+				"librairie1": "^1.0.0", // ajoutées au moment d'un "npm install"
+				"librairie2": "^1.2.0",
+				"librairie3": "^2.3.0"
+			}
+		}
+	</code></pre>
+	<p class="small">Les commentaires ne sont pas autorisés en JSON, ils sont présents ici uniquement à titre explicatif.</p>
+</section>
+
+<section>
+	<h3>Node.js</h3>
+	<h4>Structure d'un projet</h4>
+	<p>Un projet Node.js est notamment composé des fichiers / dossiers suivants :</p>
+	<ul>
+		<li><i>package.json</i> : liste les informations principales concernant un projet</li>
+		<li><i>package-lock.json</i> : fichier généré automatiquement, qui fixe la version exacte de chaque dépendance installée <br>
+			Il doit être ajouté à votre dépôt git, pour que tout le monde installe exactement les mêmes versions</li>
+		<li><i>node_modules</i> : dossier contenant toutes les dépendances téléchargées <br>
+			Il ne doit pas être ajouté à votre dépôt git, car il est souvent très lourd et recréé lors d'un <i>npm install</i></li>
+	</ul>
+	<p>Dans le fichier <i>.gitignore</i> :</p>
+	<pre><code data-trim data-noescape class="language-bash">
+		node_modules/
+	</code></pre>
+</section>
+
+<section>
+	<h3>Vite</h3>
+	<h4>Introduction à Vite</h4>
+	<p>Vite est un outil de développement web fonctionnant avec Node.js (entre autres). Il joue deux rôles :</p>
+	<ul>
+		<li><i>Serveur de développement</i> : sert votre application en local et la recharge instantanément à chaque modification du code (<i>Hot Module Replacement</i>, HMR)</li>
+		<li><i>Bundler</i> : au moment du build, prend un ensemble de fichiers JavaScript, HTML, CSS, images, etc. et produit une application web rapide et minimale</li>
+	</ul>
+</section>
+
+<section>
+	<h3>Vite</h3>
+	<h4>Avantages</h4>
+	<p>Les avantages de Vite sont :</p>
+	<ul>
+		<li><i>Gestion moderne des dépendances</i> : les dépendances sont installées en ligne de commande avec npm et incluses avec du JavaScript moderne (<code>import</code>)</li>
+		<li><i>Résultat minimal</i> : Vite n'inclut que les parties de code réellement utilisées et minifie le résultat</li>
+		<li><i>Ajout facile d'autres technologies</i> : Vue, TypeScript, SCSS, Svelte, React, etc.</li>
+	</ul>
+	<p>Vite s'intègre aussi facilement aux outils de l'écosystème npm : mise en forme automatique, tests, scripts lors d'un commit, intégration continue, etc.</p>
+	<p>Ce bundler est tellement utilisé que certaines librairies en font leur moyen de diffusion principal. C'est le cas d'OpenLayers.</p>
+	<aside class="notes">
+		Les outils comme Prettier (mise en forme), Vitest (tests) ou Husky (scripts de commit) ne font pas partie de Vite, mais s'installent avec npm et s'intègrent naturellement à un projet Vite.
+	</aside>
+</section>
+
+<section>
+	<h3>Vite</h3>
+	<h4>Créer un projet</h4>
+	<br>
+	<p>Vite fournit un assistant pour créer un nouveau projet :</p>
+	<pre><code data-trim data-noescape class="language-bash">
+		npm create vite@latest
+	</code></pre>
+	<p>L'assistant demande :</p>
+	<ul>
+		<li>le nom du projet (et donc du dossier créé)</li>
+		<li>le framework : choisir <i>Vanilla</i> (JavaScript pur, sans framework)</li>
+		<li>la variante : choisir <i>JavaScript</i></li>
+	</ul>
+	<p>Il suffit ensuite d'installer les dépendances et de lancer le serveur de développement :</p>
+	<pre><code data-trim data-noescape class="language-bash">
+		cd monProjet
+		npm install
+		npm run dev
+	</code></pre>
+</section>
+
+<section>
+	<h3>Vite</h3>
+	<h4>Commandes</h4>
+	<br>
+	<p>Un projet Vite contient par défaut trois commandes, définies dans <i>package.json</i> :</p>
+	<ul>
+		<li><i>npm run dev</i> : lance le serveur de développement (par défaut sur <i>http://localhost:5173</i>), avec rechargement automatique à chaque modification</li>
+		<li><i>npm run build</i> : produit la version de production de l'application dans le dossier <i>dist/</i></li>
+		<li><i>npm run preview</i> : sert en local le contenu de <i>dist/</i>, pour tester la version de production</li>
+	</ul>
+	<br>
+	<p>Le dossier <i>dist/</i> contient uniquement des fichiers HTML, CSS, JavaScript et des ressources statiques. Il peut être déployé tel quel sur n'importe quel serveur web, sans Node.js.</p>
+	<p>Comme <i>node_modules</i>, il est généré : il ne doit pas être ajouté au dépôt git.</p>
+</section>

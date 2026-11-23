@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Projet - Randonnées personnalisées</title>
+        <meta charset="UTF-8">
+        <style>
+            html{
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            li{
+                margin:10px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Projet - Randonnées personnalisées</h1>
+
+        <h2>Contexte</h2>
+        <p>
+            Swisstopo diffuse le réseau de chemin de randonnées dans le modèle topographique <i>swissTLM3D</i>,
+            sous forme de couche cartographique (images) et sous forme de données (géométries et attributs) accessibles par des services en ligne.
+            <br><br>
+            L'objectif du projet est de réaliser une application web qui, à partir d'un point de départ choisi en cliquant sur la carte, calcule des <b>boucles de randonnée</b> :
+            des itinéraires qui partent du point cliqué et y reviennent, dans un temps donné. Par exemple :
+            <ul>
+                <li>la boucle la plus longue possible en 3 heures ;</li>
+                <li>la boucle avec le plus de dénivelé possible en 3 heures ;</li>
+                <li>les mêmes boucles, mais sans passer deux fois par le même chemin.</li>
+            </ul>
+            Pour y arriver, l'application devra récupérer les chemins et les altitudes auprès des services de la Confédération, les convertir en objets JavaScript à partir de leur modèle INTERLIS,
+            en faire un graphe, puis y chercher les meilleurs tracés.
+        </p>
+
+        <h2>Organisation</h2>
+        <p>
+            Ce guide découpe le projet en étapes. Chaque étape indique son <b>objectif</b>, mais pas la manière de l'implémenter : c'est à vous de concevoir et d'écrire le code.
+            Certaines informations (adresses des services, constantes, signatures de fonctions) vous sont données précisément, il vous est conseillé de les respecter.
+            <br><br>
+            Les documentations citées font partie du projet : il est attendu que vous les lisiez. Les slides du cours (en particulier <i>Node.js &amp; Vite</i> et <i>OpenLayers</i>) contiennent également une grande partie de ce dont vous aurez besoin.
+        </p>
+
+        <hr>
+
+        <h2>Étape 1 : Mise en place du projet</h2>
+        <p>
+            <b>Objectif :</b> disposer d'un projet Node.js + Vite qui affiche une carte OpenLayers de base dans le navigateur.
+        </p>
+        <ul>
+            <li>Si ce n'est pas déjà fait, installez Node.js (version LTS) : <a href="https://nodejs.org/">https://nodejs.org/</a></li>
+            <li>
+                Créez le projet en suivant la mise en place d'un projet OpenLayers de base, telle que décrite dans la documentation officielle :
+                <a href="https://openlayers.org/doc/quickstart.html">https://openlayers.org/doc/quickstart.html</a>.
+                Lisez cette page en entier : elle explique le rôle de chaque fichier du projet créé.
+            </li>
+            <li>Démarrez le serveur de développement et vérifiez qu'une carte du monde s'affiche dans votre navigateur.</li>
+            <li>Prenez le temps de comprendre le contenu des fichiers <code>package.json</code>, <code>index.html</code>, <code>main.js</code> et <code>style.css</code>, ainsi que le rôle de Vite (documentation : <a href="https://vite.dev/guide/">https://vite.dev/guide/</a>).</li>
+            <li>Une fois la base de code en place, créez un dépôt sur GitHub et placez-y votre code. Tous les membres du groupe pourront récupérer le code sur leur machine</li>
+        </ul>
+
+        <hr>
+
+        <h2>Étape 2 : Afficher les chemins de randonnée</h2>
+        <p>
+            <b>Objectif :</b> afficher la carte en projection suisse <code>EPSG:2056</code>, avec un fond de carte swisstopo et, par-dessus, la couche WMTS des chemins de randonnée de la Confédération.
+        </p>
+        <ul>
+            <li>
+                Consultez la liste des couches WMTS diffusées par la Confédération, et trouvez celle des chemins de randonnée (en allemand : <i>Wanderwege</i>). Notez son identifiant et le format de ses tuiles.
+                <ul>
+                    <li>Documentation du service WMTS : <a href="https://docs.geo.admin.ch/visualize-data/wmts.html">https://docs.geo.admin.ch/visualize-data/wmts.html</a></li>
+                    <li>Fichier <i>GetCapabilities</i> des couches (qui en donne la liste complète) : <a href="https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml">https://wmts.geo.admin.ch/EPSG/2056/1.0.0/WMTSCapabilities.xml</a></li>
+                    <li>Les couches peuvent aussi être explorées visuellement sur <a href="https://map.geo.admin.ch">https://map.geo.admin.ch</a></li>
+                </ul>
+            </li>
+            <li>
+                Configurez OpenLayers pour qu'il utilise la projection <code>EPSG:2056</code>, comme montré dans les slides. Pour l'étendue de la carte, vous pouvez prendre
+                <pre><code>[2420000, 1030000, 2900000, 1350000]</code></pre>
+            </li>
+            <li>
+                Les tuiles Swisstopo en <code>EPSG:2056</code> suivent leur propre grille de tuilage, qu'il faut décrire à OpenLayers. Ses paramètres sont :
+                <ul>
+                    <li>Origine de la grille (coin supérieur gauche) : <code>[2420000, 1350000]</code></li>
+                    <li>Résolutions (en mètres par pixel), du niveau 0 au niveau 28 :
+                        <pre><code>[4000, 3750, 3500, 3250, 3000, 2750, 2500, 2250, 2000, 1750, 1500, 1250, 1000, 750, 650,
+ 500, 250, 100, 50, 20, 10, 5, 2.5, 2, 1.5, 1, 0.5, 0.25, 0.1]</code></pre>
+                    </li>
+                    <li>Adresse des tuiles d'une couche (à compléter avec l'identifiant et le format de la couche) :
+                        <pre><code>https://wmts.geo.admin.ch/1.0.0/{identifiant}/default/current/2056/{z}/{x}/{y}.{format}</code></pre>
+                    </li>
+                    <li>Attention : la couche des chemins de randonnée n'a pas de tuiles au-delà du niveau 26. Cherchez dans la documentation de la source OpenLayers que vous utilisez comment l'indiquer, pour que la couche reste visible quand on zoome davantage.</li>
+                </ul>
+            </li>
+            <li>Ajoutez sous les chemins un fond de carte swisstopo. Choisissez-le de manière à ce que les chemins (jaunes, orange et rouges) restent bien lisibles.</li>
+            <li>Centrez la vue sur la Suisse, par exemple en <code>[2600000, 1180000]</code>.</li>
+        </ul>
+        <p>
+            <b>Résultat attendu :</b> une carte de la Suisse sur laquelle, en zoomant, les chemins de randonnée apparaissent par-dessus le fond de carte.
+        </p>
+
+        <hr>
+
+        <h2>Étape 3 : Réagir aux clics sur la carte</h2>
+        <p>
+            <b>Objectif :</b> savoir où l'utilisateur a cliqué. Le clic servira plus tard à choisir le point de départ des tracés.
+        </p>
+        <ul>
+            <li>Ajoutez un événement qui réagit au clic sur la carte. Les slides <i>OpenLayers</i> et la section <i>Fires</i> de la documentation de la Map vous indiquent comment faire : <a href="https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html">https://openlayers.org/en/latest/apidoc/module-ol_Map-Map.html</a></li>
+            <li>Ajoutez sur la page un panneau latéral dans lequel vous pouvez afficher des informations. Vous pouvez le faire par exemple en ajouter un nouveau bloc "div" dans le code HTML et en ajoutant le CSS nécessaire</li>
+            <li>À chaque clic, affichez les coordonnées du point cliqué dans un élément de la page (pas seulement dans la console).</li>
+            <li>Vérifiez que les coordonnées obtenues sont bien en <code>EPSG:2056</code> : elles doivent ressembler à <code>2600000, 1200000</code> (environ Berne), et non à des degrés.</li>
+            <li>Réfléchissez à l'organisation de votre code : le code qui concerne la carte et le code qui décide quoi faire d'un clic n'ont pas forcément leur place au même endroit.</li>
+        </ul>
+
+        <hr>
+
+        <h2>Étape 4 : Récupérer des altitudes</h2>
+        <p>
+            <b>Objectif :</b> écrire une fonction qui demande au service de profil de la Confédération l'altitude d'une liste de points. Elle servira à connaître le dénivelé des chemins.
+        </p>
+        <ul>
+            <li>Adresse du service : <code>https://api3.geo.admin.ch/rest/services/profile.json</code></li>
+            <li>Documentation : <a href="https://docs.geo.admin.ch/access-data/get-elevation-profile.html">https://docs.geo.admin.ch/access-data/get-elevation-profile.html</a></li>
+            <li>
+                Paramètres utilisés dans le projet :
+                <ul>
+                    <li><code>geom</code> : la ligne dont on veut le profil, sous forme de texte GeoJSON (une géométrie de type <code>LineString</code>)</li>
+                    <li><code>sr</code> : la projection des coordonnées, ici <code>2056</code></li>
+                    <li><code>nb_points</code> : avec la valeur <code>2</code>, le service renvoie exactement un point de profil par point de la ligne, dans le même ordre</li>
+                </ul>
+            </li>
+            <li>
+                Exemple de requête, que vous pouvez ouvrir directement dans votre navigateur :
+                <pre><code>https://api3.geo.admin.ch/rest/services/profile.json?geom={"type":"LineString","coordinates":[[2568089.6,1130826.9],[2567800,1130500],[2567500,1130300]]}&amp;sr=2056&amp;nb_points=2</code></pre>
+                Observez la réponse : quelles informations contient-elle ? Dans le projet, on utilisera l'altitude du modèle <code>DTM2</code>.
+            </li>
+            <li>
+                Avec une requête GET, si la requête contient trop de points, l'adresse de la page devient alors trop longue et le service répond par une erreur <code>414</code>.
+                Pour éviter  ce problème, le service accepte aussi des requêtes POST, avec les mêmes paramètres placés dans le corps de la requête (<code>Content-Type: application/x-www-form-urlencoded</code>).
+                Voir la documentation de <a href="https://developer.mozilla.org/fr/docs/Web/API/Window/fetch">fetch</a> pour envoyer une requête POST.
+                <br><br>
+                Exemple : la requête GET suivante (vers un service fictif)
+                <pre><code>const response = await fetch("https://example.com/api/service?nom=Dupont&amp;texte=" + encodeURIComponent("Bonjour à tous"));</code></pre>
+                s'écrit en POST de la manière suivante :
+                <pre><code>const response = await fetch("https://example.com/api/service", {
+    method: "POST", // méthode HTTP utilisée
+    headers: {"Content-Type": "application/x-www-form-urlencoded"},
+    // Corps de la requête : les mêmes paramètres qu'après le "?" de la requête GET, sous la forme nom=valeur, séparés par des &amp;, et encodés avec encodeURIComponent
+    body: "nom=Dupont&amp;texte=" + encodeURIComponent("Bonjour à tous")
+});</code></pre>
+                La réponse se traite ensuite exactement comme pour une requête GET (<code>response.ok</code>, <code>response.json()</code>, etc.).
+            </li>
+            <li>
+                Dans votre code, implémentez la fonction suivante :
+                <pre><code>/**
+ * Demande au service de profil l'altitude de chaque point.
+ * @param {Array} coordinates - tableau de coordonnées [x, y] en EPSG:2056, par exemple [[2568089.6, 1130826.9], [2567800, 1130500]]
+ * @returns {Promise} promesse d'un tableau de nombres : l'altitude (DTM2) de chaque point, dans le même ordre
+ */
+async function getAltitudes(coordinates){
+    // Contenu de la fonction
+}</code></pre>
+                Construisez vous-même la requête à partir des paramètres ci-dessus.
+            </li>
+            <li>
+                Pour tester, l'appel suivant :
+                <pre><code>getAltitudes([[2568089.6, 1130826.9], [2567800, 1130500], [2567500, 1130300]])</code></pre>
+                doit donner :
+                <pre><code>[790, 773.9, 768.8]</code></pre>
+            </li>
+        </ul>
+
+        <hr>
+
+        <h2>Étape 5 : Récupérer les chemins de randonnée</h2>
+        <p>
+            <b>Objectif :</b> écrire une fonction qui récupère, auprès du service <i>identify</i> de la Confédération, tous les chemins de randonnée situés dans un rectangle.
+            Pour le moment, la fonction renvoie simplement les résultats tels que le service les fournit.
+        </p>
+        <ul>
+            <li>Adresse du service : <code>https://api3.geo.admin.ch/rest/services/api/MapServer/identify</code></li>
+            <li>Documentation : <a href="https://docs.geo.admin.ch/access-data/identify-features.html">https://docs.geo.admin.ch/access-data/identify-features.html</a></li>
+            <li>
+                Paramètres utilisés dans le projet :
+                <ul>
+                    <li><code>layers</code> : <code>all:</code> suivi de l'identifiant de la couche des chemins de randonnée (le même qu'à l'étape 2)</li>
+                    <li><code>geometryType</code> : <code>esriGeometryEnvelope</code> (on interroge un rectangle)</li>
+                    <li><code>geometry</code> : le rectangle, sous la forme <code>xMin,yMin,xMax,yMax</code></li>
+                    <li><code>mapExtent</code> : le même rectangle</li>
+                    <li><code>imageDisplay</code> : <code>1000,1000,96</code></li>
+                    <li><code>tolerance</code> : <code>0</code></li>
+                    <li><code>sr</code> : <code>2056</code></li>
+                    <li><code>returnGeometry</code> : <code>true</code> et <code>geometryFormat</code> : <code>geojson</code>, pour recevoir la géométrie des chemins</li>
+                    <li><code>limit</code> et <code>offset</code> : voir ci-dessous</li>
+                </ul>
+            </li>
+            <li>
+                <b>Attention :</b> pour chaque appel, le service renvoie au maximum <b>200 résultats par requête</b> (paramètre <code>limit</code>). Pour obtenir les résultats suivants, s'il y en a plus que 200, il faut changer l'<code>offset</code>. Par exemple, si vous faites une requête et qu'elle retourne 200 résultats, il y en a peut-être plus. Pour voir les résultats suivants, il vous faudra faire une seconde requête avec <code>offset=200</code> pour obtenir les résultats 200 à 400 (ou moins s'il y a moins de 400 résultats).<br>
+                Votre fonction doit renvoyer <b>tous</b> les chemins dans le rectangle, quel que soit leur nombre. Il vous faudra donc implémenter une logique qui effectue plusieurs requêtes pour récupérer tous les résultats. Faites attention à minimiser le nombre de requêtes.
+            </li>
+            <li>
+                Fonction à implémenter :
+                <pre><code>/**
+ * Récupère tous les chemins de randonnée d'un rectangle.
+ * @param {Object} area - le rectangle en EPSG:2056, sous la forme { xMin: ..., yMin: ..., xMax: ..., yMax: ... }
+ * @returns {Promise} promesse d'un tableau contenant tous les résultats renvoyés par le service (contenu de "results")
+ */
+async function loadTrails(area){
+    // Fonction à implémenter   
+}</code></pre>
+            </li>
+            <li>
+                Chaque résultat du service ressemble à ceci (coordonnées raccourcies) :
+                <pre><code>{
+  "type": "Feature",
+  "featureId": 3781460,
+  "bbox": [2600359.1, 1199873.7, 2600743.0, 1200136.3],
+  "layerBodId": "(identifiant de la couche)",
+  "layerName": "Wanderwege",
+  "id": 3781460,
+  "geometry": {
+    "type": "LineString",
+    "coordinates": [[2600359.1, 1200136.3], [2600365.6, 1200131.4], ...]
+  },
+  "properties": {
+    "hikingtype": null,
+    "bridgetype": null,
+    "tunneltype": null,
+    "label": 3781460
+  }
+}</code></pre>
+            </li>
+            <li>
+                Pour tester :
+                <ul>
+                    <li><code>loadTrails({ xMin: 2600000, yMin: 1200000, xMax: 2601000, yMax: 1201000 })</code> renvoie 7 chemins, en 1 requête ;</li>
+                    <li><code>loadTrails({ xMin: 2597000, yMin: 1197000, xMax: 2603000, yMax: 1203000 })</code> renvoie 211 chemins, en 2 requêtes.</li>
+                </ul>
+            </li>
+            <li>Combinez ensuite les étapes 4 et 5 : pour les chemins du second rectangle, combien de requêtes faut-il au total pour obtenir aussi toutes les altitudes ? Combien de temps cela prend-il ? Notez vos observations, elles seront utiles plus tard.</li>
+        </ul>
+
+        <hr>
+
+        <h2>Étape 6 : Modèle INTERLIS et classes JavaScript</h2>
+        <p>
+            <b>Objectif :</b> représenter les chemins de randonnée par des objets JavaScript, en partant de la description officielle des données, et non de ce que le service renvoie.
+        </p>
+        <ul>
+            <li>
+                Les données des chemins de randonnée sont décrites par le modèle INTERLIS <code>swissTLM3D_ili2_V2_3</code>, disponible dans le dépôt de modèles de la Confédération :
+                <ul>
+                    <li>Dépôt de modèles : <a href="https://models.geo.admin.ch">https://models.geo.admin.ch</a></li>
+                    <li>Fichier du modèle : <a href="https://models.geo.admin.ch/Swisstopo/swissTLM3D_ili2_V2_3.ili">https://models.geo.admin.ch/Swisstopo/swissTLM3D_ili2_V2_3.ili</a></li>
+                </ul>
+            </li>
+            <li>
+                Dans ce modèle, un tronçon de chemin de randonnée est un objet de la classe <code>TLM_STRASSE</code> du topic <code>TLM_STRASSEN</code>. Lisez sa définition, ainsi que celle de tout ce qu'elle utilise :
+                la classe dont elle hérite, ses domaines de valeurs (énumérations), et le type de sa géométrie (<code>D_POLYLINE</code>, dont les sommets sont de type <code>HKoord</code>).
+            </li>
+            <li>
+                Créez une ou plusieurs classes JavaScript, chacune dans son module, qui reprennent ce que le modèle INTERLIS indique pour un tronçon de chemin de randonnée. Quelques questions pour vous guider :
+                <ul>
+                    <li>Quels attributs du modèle sont utiles au projet ? Lesquels le service de l'étape 5 fournit-il réellement, et sous quel nom ?</li>
+                    <li>Comment représenter en JavaScript une énumération INTERLIS, et que faire si une valeur reçue n'en fait pas partie ?</li>
+                    <li>Que faire d'un attribut obligatoire (<code>MANDATORY</code>) absent, ou d'une géométrie invalide ?</li>
+                    <li>Comment représenter un sommet de type <code>HKoord</code> ? Le service de l'étape 5 renvoie-t-il toutes ses composantes ? Comment compléter celles qui manquent avec l'étape 4 ?</li>
+                    <li>Le modèle autorise des arcs de cercle dans les lignes. Dans ce projet, on considère que les chemins sont uniquement composés de segments droits.</li>
+                    <li>Les objets doivent-ils pouvoir être modifiés après leur création ? Pensez à l'encapsulation et à l'immutabilité vues en cours.</li>
+                </ul>
+            </li>
+            <li>Écrivez une fonction qui convertit un résultat de l'étape 5 en objet de votre classe, et vérifiez que les chemins du second rectangle de l'étape 5 sont tous convertis sans erreur.</li>
+        </ul>
+
+        <hr>
+
+        <p><i>Les étapes suivantes (construction du graphe des chemins, premier calcul de boucle, optimisation) seront ajoutées à ce guide par la suite.</i></p>
+    </body>
+</html>
